@@ -39,10 +39,16 @@ node --version
 npm --version
 git --version
 gh --version
+npx expo --version
+npx expo install --check
+npm run typecheck
 ```
 
 - 目前已確認 Node.js `v24.18.0` 與 npm `11.16.0`。
 - 目前已確認 Git 與 GitHub CLI 已安裝。
+- 目前已確認 Expo CLI `56.1.16`，Expo SDK `56.0.12`。
+- React、React DOM 與 React Native 版本需通過 `npx expo install --check`。
+- 若 npm 顯示 `Unknown env config "devdir"`，屬 npm 設定警告，暫不阻塞專案指令。
 - 若 Expo 相容性出問題，改用 Node.js LTS 22。
 
 ## Git 基本流程

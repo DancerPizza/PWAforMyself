@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "Expo PWA Tools",
+    "slug": "expo-pwa-tools",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "platforms": ["ios", "web"],
+    "scheme": "expo-pwa-tools",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    }
+  }
+}

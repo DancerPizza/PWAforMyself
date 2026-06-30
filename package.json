@@ -1,0 +1,40 @@
+{
+  "name": "expo-pwa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal offline Expo PWA tool collection.",
+  "main": "index.ts",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "expo start",
+    "web": "expo start --web",
+    "export:web": "expo export --platform web",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DancerPizza/PWAforMyself.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/DancerPizza/PWAforMyself/issues"
+  },
+  "homepage": "https://github.com/DancerPizza/PWAforMyself#readme",
+  "dependencies": {
+    "@expo/metro-runtime": "^56.0.15",
+    "expo": "^56.0.12",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.85.3",
+    "react-native-web": "^0.21.2"
+  },
+  "devDependencies": {
+    "@expo/ngrok": "^4.1.3",
+    "@types/react": "^19.2.17",
+    "typescript": "^6.0.3"
+  }
+}

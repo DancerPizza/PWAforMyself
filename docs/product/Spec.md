@@ -9,9 +9,9 @@
 ## MVP 功能範圍
 
 - 主畫面：提供三個功能入口按鈕。
-- 極簡代辦事項：日期列表、事件日期標記、點選日期顯示當日代辦。
+- 極簡代辦事項：月曆檢視、事件日期標記、點選日期顯示當日代辦。
 - 簡易筆記本：列表檢視，支援標題、描述、日期、分類。
-- 收支紀錄：月份入口、月份列表、分類金額統計。
+- 收支紀錄：年曆入口、月份列表、分類金額統計。
 - 本地儲存：優先使用 `localStorage`；資料量或圖片需求增加時改用 IndexedDB。
 
 ## 非 MVP 範圍
@@ -20,6 +20,7 @@
 - 不做雲端同步。
 - 不做自動提醒或推播通知。
 - 不做原生 iOS 小工具 Widget。
+- 不做行事曆提醒功能，但功能頁可使用月曆、年曆作為資料瀏覽 UI。
 - 不做複雜狀態管理。
 - 圖片上傳、拍攝圖片與簡易畫筆先列為第二階段功能。
 
@@ -42,10 +43,16 @@
 
 - PC：Node.js `v24.18.0`。
 - PC：npm `11.16.0`。
+- Expo SDK：`56.0.12`。
+- Expo CLI：`56.1.16`。
+- React / React DOM：`19.2.3`，已依 `npx expo install --check` 對齊 Expo SDK 56。
+- React Native：`0.85.3`，已依 `npx expo install --check` 對齊 Expo SDK 56。
 - PC：Git 已安裝。
 - PC：GitHub CLI 已安裝。
 - iPhone：Expo Go 已安裝。
 - 需確認：GitHub CLI 是否已登入。
+- 注意：npm 目前會顯示 `Unknown env config "devdir"` 警告，屬使用者 npm 設定警告，暫不阻塞專案指令。
+- 注意：`npm audit` 顯示 11 個 moderate vulnerabilities，主要來自 Expo CLI / `@expo/ngrok` 相關依賴；`npm audit fix --force` 會降級 Expo 至舊版，暫不執行。
 - 注意：若 Expo 建專案或啟動時遇到相容性問題，改用 Node.js LTS 22。
 
 ## 目標裝置資訊
@@ -124,20 +131,20 @@
 
 ### M1 專案骨架
 
-- [ ] 建立 Expo TypeScript 專案。
-- [ ] 確認 Web / PWA 輸出設定。
-- [ ] 建立主畫面與三個功能入口。
+- [x] 建立 Expo TypeScript 專案。
+- [x] 確認 Web / PWA 輸出設定。
+- [x] 建立主畫面與三個功能入口。
 - [ ] 用 iPhone Expo Go 即時預覽。
 
 ### M2 本地儲存
 
-- [ ] 建立共用 storage helper。
-- [ ] 定義三項功能的資料型別。
-- [ ] 完成 localStorage 讀寫、更新與刪除。
+- [x] 建立共用 storage helper。
+- [x] 定義三項功能的資料型別。
+- [x] 完成 localStorage 讀寫、更新與刪除。
 
 ### M3 極簡代辦事項
 
-- [ ] 建立日期列表檢視。
+- [ ] 建立月曆檢視。
 - [ ] 標示有代辦的日期。
 - [ ] 點選日期後顯示當日代辦。
 - [ ] 支援新增、編輯、完成與刪除。
@@ -150,6 +157,7 @@
 
 ### M5 收支紀錄
 
+- [ ] 建立年曆入口。
 - [ ] 建立月份列表。
 - [ ] 支援收入與支出紀錄。
 - [ ] 依分類統計金額。

@@ -5,9 +5,9 @@
 ## 功能概要
 
 - 主畫面：三個功能入口按鈕。
-- 極簡代辦事項：日期列表、事件日期標記、點選日期顯示當日代辦。
+- 極簡代辦事項：月曆檢視、事件日期標記、點選日期顯示當日代辦。
 - 簡易筆記本：標題、描述、日期、分類。
-- 收支紀錄：月份列表、收入支出紀錄、分類金額統計。
+- 收支紀錄：年曆入口、月份列表、收入支出紀錄、分類金額統計。
 - 不做登入、雲端同步、自動提醒或推播通知。
 
 ## 文件
@@ -17,22 +17,26 @@
 - [process/workflow.md](./process/workflow.md)：個人離線開發流程與 Git 步驟。
 - [agent/AGENTS.md](./agent/AGENTS.md)：Cursor Agent 開發準則與進度追蹤。
 
-## 目前狀態
-
-- M0 文件與規則整理完成。
-- Markdown 文件已分類到 `docs/product/`、`docs/process/`、`docs/agent/`。
-- Node.js `v24.18.0`、npm `11.16.0` 與 iPhone Expo Go 已準備好。
-- 尚未建立 Expo TypeScript 專案骨架。
-- 下一步是建立 Expo 專案、確認 Web / PWA 輸出設定，並完成主畫面三功能入口。
-
 ## 開發快速開始
 
 ```bash
-npx create-expo-app@latest . --template blank-typescript
-npx expo start
+npm install
+npm run web
 ```
 
 手機即時預覽使用 Expo Go；若同網段連線不穩，改用 Expo Tunnel。
+
+## 環境檢查
+
+```bash
+node --version
+npm --version
+npx expo --version
+npx expo install --check
+npm run typecheck
+```
+
+目前版本基準為 Node.js `v24.18.0`、npm `11.16.0`、Expo SDK `56.0.12`、Expo CLI `56.1.16`。
 
 ## 技術棧
 
