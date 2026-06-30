@@ -2,6 +2,23 @@ import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'rea
 
 import { toolEntries } from '../data/tools';
 
+const theme = {
+  background: '#23272e',
+  surface: '#31332b',
+  surfaceElevated: '#383a31',
+  border: '#54564b',
+  text: '#f8f8f2',
+  mutedText: '#cfcfc2',
+  pink: '#db6d76',
+  green: '#a6e22e',
+  yellow: '#e7e197',
+  cyan: '#8ce2f3',
+  purple: '#ae81ff'
+};
+
+const monoFont = 'JetBrains Mono, Noto Sans TC, monospace';
+const textFont = 'Noto Sans TC, JetBrains Mono, sans-serif';
+
 export function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -37,7 +54,7 @@ export function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f7f3ea'
+    backgroundColor: theme.background
   },
   container: {
     flexGrow: 1,
@@ -45,25 +62,34 @@ const styles = StyleSheet.create({
     paddingVertical: 32
   },
   header: {
-    marginBottom: 28
+    borderColor: theme.border,
+    borderRadius: 24,
+    borderWidth: 1,
+    boxShadow: `0 16px 36px rgba(0, 0, 0, 0.22)`,
+    backgroundColor: theme.surface,
+    marginBottom: 28,
+    padding: 22
   },
   eyebrow: {
-    color: '#7c5e32',
+    color: theme.green,
+    fontFamily: monoFont,
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '600',
     letterSpacing: 0.8,
     marginBottom: 8,
     textTransform: 'uppercase'
   },
   title: {
-    color: '#1f2933',
+    color: theme.text,
+    fontFamily: textFont,
     fontSize: 34,
-    fontWeight: '800',
+    fontWeight: '600',
     lineHeight: 42,
     marginBottom: 12
   },
   description: {
-    color: '#52616b',
+    color: theme.mutedText,
+    fontFamily: textFont,
     fontSize: 16,
     lineHeight: 24
   },
@@ -71,11 +97,11 @@ const styles = StyleSheet.create({
     gap: 14
   },
   card: {
-    backgroundColor: '#ffffff',
-    borderColor: '#eadfce',
+    backgroundColor: theme.surfaceElevated,
+    borderColor: theme.border,
     borderRadius: 22,
     borderWidth: 1,
-    boxShadow: '0 8px 18px rgba(0, 0, 0, 0.08)',
+    boxShadow: '0 12px 26px rgba(0, 0, 0, 0.2)',
     padding: 20,
   },
   cardPressed: {
@@ -89,24 +115,29 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   cardTitle: {
-    color: '#1f2933',
+    color: theme.yellow,
     flex: 1,
+    fontFamily: textFont,
     fontSize: 20,
-    fontWeight: '800',
+    fontWeight: '600',
     marginRight: 12
   },
   statusLabel: {
-    backgroundColor: '#f0e4d1',
+    backgroundColor: theme.background,
     borderRadius: 999,
-    color: '#7c5e32',
+    borderColor: theme.pink,
+    borderWidth: 1,
+    color: theme.pink,
+    fontFamily: monoFont,
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '600',
     overflow: 'hidden',
     paddingHorizontal: 10,
     paddingVertical: 6
   },
   cardSubtitle: {
-    color: '#52616b',
+    color: theme.cyan,
+    fontFamily: textFont,
     fontSize: 15,
     lineHeight: 22
   }
