@@ -41,7 +41,7 @@ disable-model-invocation: true
 ## 文件同步檢查
 
 - `docs/product/Spec.md`：產品目的、技術棧、工具選用、階段性任務。
-- `docs/process/Project_Log.md`：以 `[yyyy-mm-dd | hh:mm]` 區塊記錄實作日誌。
+- `docs/process/Project_Log.md`：以 `[yyyy-mm-dd]` 區塊記錄實作日誌，同類進度以 `[標籤]` 合併。
 - `docs/agent/AGENTS.md`：Agent 準則與目前進度。
 - `docs/process/workflow.md`：個人離線開發流程與 Git 步驟。
 - `.cursorrules.md`：固定規則與使用者偏好。

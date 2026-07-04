@@ -110,7 +110,7 @@ git log --oneline --decorate -5
 ## 文件更新流程
 
 1. `docs/product/Spec.md` 記錄產品方向、技術選型與階段性任務。
-2. `docs/process/Project_Log.md` 以 `[yyyy-mm-dd | hh:mm]` 區塊記錄實作日誌。
+2. `docs/process/Project_Log.md` 以 `[yyyy-mm-dd]` 區塊記錄實作日誌，同類進度以 `[標籤]` 合併。
 3. `docs/agent/AGENTS.md` 記錄 Agent 開發準則與目前進度。
 4. `.cursorrules.md` 記錄專案固定規則與操作偏好。
 5. `docs/process/workflow.md` 記錄可重複的個人開發流程。

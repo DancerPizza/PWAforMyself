@@ -1,7 +1,9 @@
+export type ToolId = 'todos' | 'notes' | 'expenses';
+
 export type ToolStatus = 'ready' | 'planned';
 
 export type ToolEntry = {
-  id: string;
+  id: ToolId;
   title: string;
   subtitle: string;
   status: ToolStatus;
