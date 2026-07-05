@@ -160,18 +160,47 @@
 
 - [x] 補齊 manifest 設定
 - [x] 實作並註冊 Service Worker
-- [x] 驗證 iPhone Safari 加到主畫面（區網 HTTP 測試通過；正式離線改以 GitHub Pages HTTPS）
-- [x] 斷網測試：App Shell 可載入、資料可讀寫（需 HTTPS 部署後自主畫面驗收）
-- [x] 測試手機尺寸、觸控操作
+- [x] 驗證 iPhone Safari 加到主畫面（區網 HTTP 功能驗證通過）
+- [x] 測試手機尺寸、觸控操作、表單驗證、首頁版面
 - [x] 更新 `docs/process/Project_Log.md` 與 `docs/agent/AGENTS.md` 進度
 
-### M7 GitHub Pages 部署
+## 未完成進度（依批次）
 
-- 正式網址：`https://dancerpizza.github.io/PWAforMyself/`
+> MVP 功能（M0–M6 程式）已完成。以下為待辦批次，建議一次交付一整批給 Agent。
+
+### 批次 A — M6 收尾
+
+- [ ] 正式 HTTPS 離線驗收（依批次 B 上線後執行）
+
+### 批次 B — GitHub Pages 部署（下次開工前，優先）
+
+- 正式網址（上線後）：`https://dancerpizza.github.io/PWAforMyself/`
 - `experiments.baseUrl`：`/PWAforMyself`
-- push `main` 後由 GitHub Actions 自動 build 並部署 `dist/`
+- **目前狀態**：repo 為 Private，免費帳號無法啟用 Pages；workflow 已就緒，尚未部署。
 
 - [x] 新增 `.github/workflows/deploy-pages.yml`
 - [x] 設定 `baseUrl`、相對路徑 manifest / Service Worker
 - [x] `dist/.nojekyll`（避免 Jekyll 忽略 `_expo`）
-- [ ] 於 GitHub Settings → Pages 選擇 **GitHub Actions** 來源（首次需手動）
+- [ ] 將 repo 改為 **Public**（Settings → General → Change visibility）
+- [ ] Settings → Pages → Source 選 **GitHub Actions**
+- [ ] push `main` 後確認 Actions 部署成功
+- [ ] iPhone Safari 開啟 HTTPS 網址 → 加入主畫面
+- [ ] 斷網驗收：關閉 PC 後仍可從主畫面開啟並讀寫資料
+
+### 批次 C — 筆記圖片（第二階段）
+
+- [ ] 建立 IndexedDB helper（圖片 blob 儲存）
+- [ ] 筆記表單支援選擇圖片（`<input type="file">`）
+- [ ] 筆記列表顯示縮圖；`NoteItem.imageIds` 接上
+- 不做：拍照、畫筆、雲端同步
+
+### 批次 D — UX 拋光
+
+- [ ] 刪除代辦／筆記／收支前確認對話框
+- [ ] 日期欄位格式提示強化（可選：日期選擇器）
+- [ ] 共用表單欄位元件（可選，減少三畫面重複）
+
+### 批次 E — 資料匯出匯入
+
+- [ ] 匯出 localStorage JSON 備份
+- [ ] 匯入 JSON 還原（覆蓋前需確認）

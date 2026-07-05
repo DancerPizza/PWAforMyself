@@ -2,10 +2,12 @@
 
 ## [2026-07-06]
 
-- [功能] M6 結案：實機版面、驗證提醒、圖示替換完成
-- [功能] M7 GitHub Pages：Actions workflow、`baseUrl` `/PWAforMyself`、`.nojekyll`
-- [文件] 更新 AGENTS／Spec／README 部署與離線說明
-- [環境] 正式網址：`https://dancerpizza.github.io/PWAforMyself/`
+- [功能] M6 結案：實機版面、驗證提醒、圖示替換、表單捲動完成
+- [功能] M7 程式就緒：Actions workflow、`baseUrl`、`.nojekyll`；**尚未實際部署**
+- [待辦] 未完成進度改以批次 A–E 記錄於 AGENTS／Spec
+- [待辦] **批次 B**（優先）：repo 改 Public → Pages 啟用 → HTTPS 上線 → 斷網驗收
+- [待辦] **批次 A**：HTTPS 離線驗收（依批次 B）
+- [待辦] **批次 C–E**：筆記圖片、UX 拋光、資料匯出匯入（MVP 後）
 
 ## [2026-07-05]
 

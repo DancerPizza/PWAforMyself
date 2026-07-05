@@ -4,10 +4,24 @@
 
 ## 線上版本（PWA）
 
-**https://dancerpizza.github.io/PWAforMyself/**
+**https://dancerpizza.github.io/PWAforMyself/**（待**批次 B** 部署上線，目前尚未啟用）
+
+> **下次開工前待辦（批次 B）**：repo 改 Public → Settings → Pages → GitHub Actions → 等 Actions 跑完 → 手機加入主畫面。
 
 iPhone Safari 開啟 → 分享 → **加入主畫面**。  
 有網路時開啟一次後，即可關閉電腦、斷網從主畫面使用（資料在 localStorage，App 殼由 Service Worker 快取）。
+
+## 後續批次（MVP 後）
+
+| 批次 | 內容 | 狀態 |
+|------|------|------|
+| A | M6 HTTPS 離線驗收 | 待批次 B |
+| B | GitHub Pages 部署 | **下次優先** |
+| C | 筆記圖片 / IndexedDB | 未開始 |
+| D | UX 拋光 | 未開始 |
+| E | 資料匯出匯入 | 未開始 |
+
+詳見 [agent/AGENTS.md](./agent/AGENTS.md) §未完成進度（依批次）。
 
 ## 功能概要
 
@@ -32,16 +46,17 @@ npm run web          # 日常開發預覽（本機）
 npm run build:web    # 產出 dist/（含 manifest、Service Worker）
 ```
 
-## GitHub Pages 部署
+## GitHub Pages 部署（批次 B）
 
 push 至 `main` 後，`.github/workflows/deploy-pages.yml` 會自動 build 並部署。
 
-**首次啟用（只需一次）：**
+**首次啟用（只需一次，下次開工前完成）：**
 
-1. 開啟 https://github.com/DancerPizza/PWAforMyself/settings/pages
-2. **Build and deployment** → Source 選 **GitHub Actions**
-3. 等待 Actions 跑完（約 1–2 分鐘）
-4. 以手機開啟上方線上網址 → 加入主畫面
+1. **Settings → General** → 將 repo 改為 **Public**（目前 Private 無法啟用 Pages）
+2. 開啟 https://github.com/DancerPizza/PWAforMyself/settings/pages
+3. **Build and deployment** → Source 選 **GitHub Actions**
+4. push `main`（若已有 workflow 可略過）並等待 Actions 跑完（約 1–2 分鐘）
+5. 以手機開啟 HTTPS 網址 → 加入主畫面 → 斷網驗收
 
 之後每次 push `main` 會自動更新網站，**不需**再執行 `npx serve dist`。
 
