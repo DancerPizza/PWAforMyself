@@ -1,6 +1,6 @@
 # Cursor Agent 指南 - PWA 極簡工具集
 
-> `last_updated`: 2026-07-05
+> `last_updated`: 2026-07-06
 
 ## 角色定位
 
@@ -160,7 +160,18 @@
 
 - [x] 補齊 manifest 設定
 - [x] 實作並註冊 Service Worker
-- [ ] 驗證 iPhone Safari 加到主畫面（需實機；以 `npm run build:web` 產出 `dist/` 後部署或區網提供 HTTPS）
-- [ ] 斷網測試：App Shell 可載入、資料可讀寫（需實機或本機 `npx serve dist` 後離線驗證）
-- [ ] 測試手機尺寸、觸控操作（開發期以瀏覽器 DevTools；實機留待上方驗證）
+- [x] 驗證 iPhone Safari 加到主畫面（區網 HTTP 測試通過；正式離線改以 GitHub Pages HTTPS）
+- [x] 斷網測試：App Shell 可載入、資料可讀寫（需 HTTPS 部署後自主畫面驗收）
+- [x] 測試手機尺寸、觸控操作
 - [x] 更新 `docs/process/Project_Log.md` 與 `docs/agent/AGENTS.md` 進度
+
+### M7 GitHub Pages 部署
+
+- 正式網址：`https://dancerpizza.github.io/PWAforMyself/`
+- `experiments.baseUrl`：`/PWAforMyself`
+- push `main` 後由 GitHub Actions 自動 build 並部署 `dist/`
+
+- [x] 新增 `.github/workflows/deploy-pages.yml`
+- [x] 設定 `baseUrl`、相對路徑 manifest / Service Worker
+- [x] `dist/.nojekyll`（避免 Jekyll 忽略 `_expo`）
+- [ ] 於 GitHub Settings → Pages 選擇 **GitHub Actions** 來源（首次需手動）

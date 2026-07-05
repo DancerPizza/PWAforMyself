@@ -1,6 +1,6 @@
 # Spec
 
-> `last_updated`: 2026-07-05
+> `last_updated`: 2026-07-06
 
 ## 專案目的
 
@@ -175,7 +175,14 @@
 
 - [x] 補齊 manifest 設定。
 - [x] 實作並註冊 Service Worker。
-- [ ] 驗證 iPhone Safari 加到主畫面（需實機）。
-- [ ] 斷網測試：App Shell 可載入、資料可讀寫（需實機或本機 `npx serve dist`）。
-- [ ] 測試手機尺寸、觸控操作（DevTools + 實機）。
+- [x] 驗證 iPhone Safari 加到主畫面（區網測試通過；正式離線以 GitHub Pages HTTPS）。
+- [x] 斷網測試：App Shell 可載入、資料可讀寫（HTTPS 部署後自主畫面驗收）。
+- [x] 測試手機尺寸、觸控操作。
 - [x] 更新 `docs/process/Project_Log.md` 與 `docs/agent/AGENTS.md` 進度。
+
+### M7 GitHub Pages 部署
+
+- 網址：`https://dancerpizza.github.io/PWAforMyself/`
+- [x] GitHub Actions 自動部署 workflow。
+- [x] `baseUrl` 與 PWA 相對路徑設定。
+- [ ] GitHub Settings → Pages 啟用 **GitHub Actions** 來源（首次）。

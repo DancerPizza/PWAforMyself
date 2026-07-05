@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
+import { copyFileSync, existsSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const publicDir = 'public';
@@ -24,3 +24,6 @@ for (const entry of readdirSync(publicDir)) {
   copyFileSync(sourcePath, targetPath);
   console.log(`Copied ${entry} -> dist/${entry}`);
 }
+
+writeFileSync(join(distDir, '.nojekyll'), '');
+console.log('Created dist/.nojekyll');

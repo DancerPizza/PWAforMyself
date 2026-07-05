@@ -1,5 +1,12 @@
 # Project Log
 
+## [2026-07-06]
+
+- [功能] M6 結案：實機版面、驗證提醒、圖示替換完成
+- [功能] M7 GitHub Pages：Actions workflow、`baseUrl` `/PWAforMyself`、`.nojekyll`
+- [文件] 更新 AGENTS／Spec／README 部署與離線說明
+- [環境] 正式網址：`https://dancerpizza.github.io/PWAforMyself/`
+
 ## [2026-07-05]
 
 - [環境] 開發機自筆電遷移至桌機；`npm install` 完成，typecheck 通過

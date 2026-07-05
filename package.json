@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/DancerPizza/PWAforMyself/issues"
   },
-  "homepage": "https://github.com/DancerPizza/PWAforMyself#readme",
+  "homepage": "https://dancerpizza.github.io/PWAforMyself/",
   "dependencies": {
     "@expo/metro-runtime": "^56.0.15",
     "expo": "^56.0.14",

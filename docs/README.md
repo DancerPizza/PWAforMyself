@@ -2,6 +2,13 @@
 
 個人離線使用的 iPhone PWA 小工具集合，目標是保持功能簡單、資料本地儲存、安裝與預覽流程輕量。
 
+## 線上版本（PWA）
+
+**https://dancerpizza.github.io/PWAforMyself/**
+
+iPhone Safari 開啟 → 分享 → **加入主畫面**。  
+有網路時開啟一次後，即可關閉電腦、斷網從主畫面使用（資料在 localStorage，App 殼由 Service Worker 快取）。
+
 ## 功能概要
 
 - 主畫面：三個功能入口按鈕。
@@ -21,20 +28,31 @@
 
 ```bash
 npm install
-npm run web          # 日常開發預覽
+npm run web          # 日常開發預覽（本機）
 npm run build:web    # 產出 dist/（含 manifest、Service Worker）
 ```
 
-手機即時預覽以 Web 為主（`npm run web` + 瀏覽器開發工具模擬 iPhone）；Expo Go 因 App Store 無最新版不再使用。
+## GitHub Pages 部署
 
-### PWA 實機測試（M6）
+push 至 `main` 後，`.github/workflows/deploy-pages.yml` 會自動 build 並部署。
+
+**首次啟用（只需一次）：**
+
+1. 開啟 https://github.com/DancerPizza/PWAforMyself/settings/pages
+2. **Build and deployment** → Source 選 **GitHub Actions**
+3. 等待 Actions 跑完（約 1–2 分鐘）
+4. 以手機開啟上方線上網址 → 加入主畫面
+
+之後每次 push `main` 會自動更新網站，**不需**再執行 `npx serve dist`。
+
+### 本機預覽正式版（可選）
 
 ```bash
 npm run build:web
 npx serve dist
 ```
 
-以 iPhone Safari 開啟區網 URL → 分享 → 加入主畫面。斷網後確認 App 可開啟且 localStorage 資料可讀寫。
+注意：區網 `http://` 可能無法註冊 Service Worker；離線測試請用 GitHub Pages HTTPS。
 
 ## 環境檢查
 

@@ -13,9 +13,9 @@
     <meta name="apple-mobile-web-app-title" content="PWA Tools" />
     <meta name="mobile-web-app-capable" content="yes" />
     <title>%WEB_TITLE%</title>
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="apple-touch-icon" href="/icon-192.png" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
     <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
       /* iPhone PWA：使用 dvh 與 safe-area，避免底部露出白邊 */
@@ -62,7 +62,7 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch((error) => {
+          navigator.serviceWorker.register('sw.js').catch((error) => {
             console.error('Service Worker registration failed:', error);
           });
         });
