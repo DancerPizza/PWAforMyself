@@ -1,5 +1,7 @@
 # Cursor Agent 指南 - PWA 極簡工具集
 
+> `last_updated`: 2026-07-05
+
 ## 角色定位
 
 - 你是一位熟悉 Expo、React、React Native Web、TypeScript 與 PWA 的資深前端開發協作者。
@@ -15,7 +17,8 @@
 
 ## 操作確認規則
 
-- 依全域規則、專案SKILL.md、其他md檔規定，若衝突則詢問。
+- 破壞性指令、選項彈窗觸發條件：依 `.cursorrules.md` §操作確認規則 執行，不在此重複定義。
+- 文件衝突優先序：依 `.cursorrules.md` §開工讀檔規則 › 文件衝突優先序 執行。
 
 ## 技術選用
 
@@ -27,17 +30,17 @@
 | PWA | Manifest + Service Worker | 支援安裝與基本離線能力 |
 | MVP 儲存 | localStorage | 儲存簡單 JSON 資料 |
 | 進階儲存 | IndexedDB | 第二階段處理圖片、畫布或大量資料 |
-| 手機預覽 | Expo Go / Expo Tunnel / Web Preview | 讓 iPhone 即時預覽開發成果 |
+| 手機預覽 | Web Preview + Browser DevTools | 日常開發以瀏覽器模擬 iPhone；實機 PWA 測試留待 M6 |
 
 ## 開發環境
 
-- PC 已安裝 Node.js `v22.23.1` 與 npm `10.9.8`。
-- Expo SDK `56.0.12`，Expo CLI `56.1.16`。
+- 開發機：桌機（2026-07-05 自筆電遷移）。
+- Node.js `v22.23.1`、npm `10.9.8`。
+- Expo SDK `56.0.14`、Expo CLI `56.1.18`。
 - React `19.2.3`、React DOM `19.2.3`、React Native `0.85.3`，已通過 `npx expo install --check`。
-- PC 已安裝 Git 與 GitHub CLI。
-- iPhone 已安裝 Expo Go。
-- npm 目前會顯示 `Unknown env config "devdir"` 警告，暫不阻塞開發。
-- `npm audit` 的 moderate vulnerabilities 主要來自 Expo CLI / `@expo/ngrok` 依賴，避免使用 `npm audit fix --force` 造成 Expo 降級。
+- PC 已安裝 Git `2.51.0` 與 GitHub CLI。
+- 日常預覽：`npm run web` + 瀏覽器開發工具；Expo Go 因 App Store 無最新版，不再使用。
+- 暫時性環境警告與 audit 紀錄見 `docs/process/Project_Log.md`。
 - 若 Expo 與 Node.js 24 發生相容性問題，改用 Node.js LTS 22。
 
 ## 開發核心原則
@@ -51,11 +54,7 @@
 
 ## 開工與 Context 流程
 
-- 每次開工或新 context window，先讀取 `.cursorrules.md`、`docs/product/Spec.md`、`docs/process/workflow.md`。
-- 接著讀取 `docs/agent/AGENTS.md` 與 `docs/process/Project_Log.md`。
-- 若任務涉及 PWA 開發流程，讀取 `.cursor/skills/pwa-dev-workflow/SKILL.md`。
-- 若文件資訊衝突，以 `.cursorrules.md` 的操作規則與 `docs/product/Spec.md` 的產品方向為優先。
-- 若仍不確定，使用選項彈窗讓使用者決定。
+- 依 `.cursorrules.md` §開工讀檔規則 執行；不在此重複定義讀檔順序。
 
 ## 裝置資訊
 
@@ -121,7 +120,7 @@
 - [x] 建立 Expo TypeScript 專案
 - [x] 確認 Web / PWA 輸出設定
 - [x] 建立主畫面與三個功能入口
-- [ ] 用 iPhone Expo Go 即時預覽（改以 Web 開發工具預覽，實機 PWA 測試留待 M6）
+- [ ] 用 iPhone Expo Go 即時預覽（已棄用：App Store 無最新版 Expo Go，改 Web 預覽；實機測試留待 M6）
 
 ### M2 本地儲存
 
@@ -154,7 +153,14 @@
 
 ### M6 PWA 與手機測試
 
-- [ ] 補齊 manifest 設定
-- [ ] 驗證 iPhone Safari 加到主畫面
-- [ ] 測試手機尺寸、觸控操作與本地儲存
-- [ ] 更新 `docs/process/Project_Log.md` 與 `docs/agent/AGENTS.md` 進度
+- Service Worker 策略：Cache-First（靜態資源：HTML / JS / CSS / icons）。
+- 不做 Background Sync、不做 Push Notification。
+- `localStorage` 由瀏覽器獨立管理，不在 Service Worker 快取範圍內。
+- 離線驗收：斷網後仍可開啟已安裝的 PWA 並讀寫 `localStorage` 資料。
+
+- [x] 補齊 manifest 設定
+- [x] 實作並註冊 Service Worker
+- [ ] 驗證 iPhone Safari 加到主畫面（需實機；以 `npm run build:web` 產出 `dist/` 後部署或區網提供 HTTPS）
+- [ ] 斷網測試：App Shell 可載入、資料可讀寫（需實機或本機 `npx serve dist` 後離線驗證）
+- [ ] 測試手機尺寸、觸控操作（開發期以瀏覽器 DevTools；實機留待上方驗證）
+- [x] 更新 `docs/process/Project_Log.md` 與 `docs/agent/AGENTS.md` 進度

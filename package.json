@@ -10,7 +10,8 @@
   "scripts": {
     "start": "expo start",
     "web": "expo start --web",
-    "export:web": "expo export --platform web",
+    "export:web": "expo export --platform web && node scripts/copy-pwa-public.mjs",
+    "build:web": "npm run export:web",
     "typecheck": "tsc --noEmit"
   },
   "repository": {

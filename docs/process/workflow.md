@@ -1,5 +1,7 @@
 # Workflow
 
+> `last_updated`: 2026-07-05
+
 ## 適用範圍
 
 - 本文件只記錄個人離線開發流程。
@@ -8,23 +10,14 @@
 
 ## 每次開工流程
 
-1. 讀取 `.cursorrules.md`，確認固定規則與操作偏好。
-2. 讀取 `docs/product/Spec.md`，確認產品方向、MVP 範圍與階段任務。
-3. 讀取 `docs/process/workflow.md`，確認開發流程與 Git 步驟。
-4. 讀取 `docs/agent/AGENTS.md`，確認 Agent 開發準則與目前進度。
-5. 讀取 `docs/process/Project_Log.md`，確認最近一次實作紀錄。
-6. 若任務涉及固定 PWA 開發流程，讀取 `.cursor/skills/pwa-dev-workflow/SKILL.md`。
-7. 確認本次需求是否屬於 MVP。
-8. 使用 Git 確認工作區狀態。
-9. 只針對本次任務需要的檔案進行修改。
+1. 依 `.cursorrules.md` §開工讀檔規則 讀取必要文件。
+2. 確認本次需求是否屬於 MVP。
+3. 使用 Git 確認工作區狀態。
+4. 只針對本次任務需要的檔案進行修改。
 
 ## 新 Context Window 流程
 
-1. 先讀取 `.cursorrules.md`、`docs/product/Spec.md`、`docs/process/workflow.md`。
-2. 再讀取 `docs/agent/AGENTS.md` 與 `docs/process/Project_Log.md`。
-3. 若正在開發功能，讀取相關功能檔案與 `.cursor/skills/pwa-dev-workflow/SKILL.md`。
-4. 若資訊衝突，以 `.cursorrules.md` 的操作規則與 `docs/product/Spec.md` 的產品方向為優先。
-5. 若仍不確定，使用選項彈窗讓使用者決定。
+- 同 §每次開工流程。
 
 ## 裝置資訊流程
 
@@ -44,11 +37,11 @@ npx expo install --check
 npm run typecheck
 ```
 
-- 目前已確認 Node.js `v24.18.0` 與 npm `11.16.0`。
-- 目前已確認 Git 與 GitHub CLI 已安裝。
-- 目前已確認 Expo CLI `56.1.16`，Expo SDK `56.0.12`。
+- 目前已確認 Node.js `v22.23.1` 與 npm `10.9.8`。
+- 目前已確認 Git `2.51.0` 與 GitHub CLI 已安裝。
+- 目前已確認 Expo CLI `56.1.18`，Expo SDK `56.0.14`。
 - React、React DOM 與 React Native 版本需通過 `npx expo install --check`。
-- 若 npm 顯示 `Unknown env config "devdir"`，屬 npm 設定警告，暫不阻塞專案指令。
+- 暫時性環境警告與 `npm audit` 紀錄見 `docs/process/Project_Log.md`。
 - 若 Expo 相容性出問題，改用 Node.js LTS 22。
 
 ## Git 基本流程
@@ -92,15 +85,15 @@ git log --oneline --decorate -5
 ## Expo 開發流程
 
 1. 建立 Expo TypeScript 專案。
-2. 啟動開發伺服器。
-3. 使用 iPhone Expo Go 掃描 QR Code 或開啟連結即時預覽。
-4. 若同網段無法連線，改用 Tunnel 模式。
-5. Web / PWA 測試時，同步使用瀏覽器開發者工具模擬 iPhone 尺寸。
+2. 啟動開發伺服器：`npm run web`。
+3. 使用瀏覽器開發者工具模擬 iPhone 尺寸與觸控。
+4. Expo Go / Tunnel 因 App Store 無最新版，不再作為日常預覽方式。
+5. 實機 PWA 安裝與離線測試留待 M6（iPhone Safari 加到主畫面）。
 
 ## 功能開發流程
 
 1. 先確認需求是否屬於 MVP。
-2. 若有多種實作方案，使用選項彈窗讓使用者決定。
+2. 若有多種實作方案，依 `.cursorrules.md` §操作確認規則 使用選項彈窗。
 3. 先完成最小可用版本。
 4. 補上必要的型別、資料儲存與基本錯誤處理。
 5. 手動測試桌面瀏覽器與手機尺寸。

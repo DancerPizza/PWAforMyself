@@ -1,5 +1,7 @@
 # Spec
 
+> `last_updated`: 2026-07-05
+
 ## 專案目的
 
 - 建立一個極簡、可安裝到 iPhone 主畫面的 PWA 個人工具集。
@@ -35,25 +37,24 @@
 | 本地儲存 | localStorage | MVP 階段儲存簡單 JSON 資料 |
 | 進階本地儲存 | IndexedDB | 第二階段處理圖片、畫布或較大資料 |
 | 開發工具 | Cursor | 編輯、重構、文件維護與 Agent 輔助開發 |
-| 手機預覽 | Expo Go / Expo Tunnel / Web Preview | 用 iPhone 即時預覽開發成果 |
+| 手機預覽 | Web Preview + Browser DevTools | 日常開發以瀏覽器模擬 iPhone；實機 PWA 測試留待 M6 |
 | UI 測試 | Browser DevTools | 模擬 iPhone 尺寸、檢查響應式與觸控體驗 |
 | 版本控制 | Git / GitHub CLI | 個人離線開發紀錄、GitHub 推送與 repo 管理 |
 
 ## 開發環境狀態
 
-- PC：Node.js `v24.18.0`。
-- PC：npm `11.16.0`。
-- Expo SDK：`56.0.12`。
-- Expo CLI：`56.1.16`。
+- 開發機：桌機（2026-07-05 自筆電遷移）。
+- PC：Node.js `v22.23.1`。
+- PC：npm `10.9.8`。
+- Expo SDK：`56.0.14`。
+- Expo CLI：`56.1.18`。
 - React / React DOM：`19.2.3`，已依 `npx expo install --check` 對齊 Expo SDK 56。
 - React Native：`0.85.3`，已依 `npx expo install --check` 對齊 Expo SDK 56。
-- PC：Git 已安裝。
+- PC：Git `2.51.0` 已安裝。
 - PC：GitHub CLI 已安裝。
-- iPhone：Expo Go 已安裝。
-- 需確認：GitHub CLI 是否已登入。
-- 注意：npm 目前會顯示 `Unknown env config "devdir"` 警告，屬使用者 npm 設定警告，暫不阻塞專案指令。
-- 注意：`npm audit` 顯示 11 個 moderate vulnerabilities，主要來自 Expo CLI / `@expo/ngrok` 相關依賴；`npm audit fix --force` 會降級 Expo 至舊版，暫不執行。
-- 注意：若 Expo 建專案或啟動時遇到相容性問題，改用 Node.js LTS 22。
+- 日常預覽：`npm run web` + 瀏覽器開發工具；Expo Go 因 App Store 無最新版，不再使用。
+- 暫時性環境警告與 `npm audit` 紀錄見 `docs/process/Project_Log.md`。
+- 若 Expo 建專案或啟動時遇到相容性問題，改用 Node.js LTS 22。
 
 ## 目標裝置資訊
 
@@ -134,7 +135,7 @@
 - [x] 建立 Expo TypeScript 專案。
 - [x] 確認 Web / PWA 輸出設定。
 - [x] 建立主畫面與三個功能入口。
-- [ ] 用 iPhone Expo Go 即時預覽。
+- [ ] 用 iPhone Expo Go 即時預覽（已棄用：改 Web 預覽；實機 PWA 測試留待 M6）。
 
 ### M2 本地儲存
 
@@ -167,7 +168,14 @@
 
 ### M6 PWA 與手機測試
 
-- [ ] 補齊 manifest 設定。
-- [ ] 驗證 iPhone Safari 加到主畫面。
-- [ ] 測試手機尺寸、觸控操作與本地儲存。
-- [ ] 更新 `docs/process/Project_Log.md` 與 `docs/agent/AGENTS.md` 進度。
+- Service Worker 策略：Cache-First（靜態資源：HTML / JS / CSS / icons）。
+- 不做 Background Sync、不做 Push Notification。
+- `localStorage` 由瀏覽器獨立管理，不在 Service Worker 快取範圍內。
+- 離線驗收：斷網後仍可開啟已安裝的 PWA 並讀寫 `localStorage` 資料。
+
+- [x] 補齊 manifest 設定。
+- [x] 實作並註冊 Service Worker。
+- [ ] 驗證 iPhone Safari 加到主畫面（需實機）。
+- [ ] 斷網測試：App Shell 可載入、資料可讀寫（需實機或本機 `npx serve dist`）。
+- [ ] 測試手機尺寸、觸控操作（DevTools + 實機）。
+- [x] 更新 `docs/process/Project_Log.md` 與 `docs/agent/AGENTS.md` 進度。

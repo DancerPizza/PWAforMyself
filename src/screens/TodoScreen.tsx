@@ -1,7 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,6 +8,8 @@ import {
   View
 } from 'react-native';
 
+import { Screen } from '../components/Screen';
+import { useScrollToSection } from '../hooks/useScrollToSection';
 import {
   createTodo,
   deleteTodo,
@@ -27,6 +28,7 @@ import {
   getMonthLabel,
   parseISODate
 } from '../utils/date';
+import { getFirstMissingField, showValidationAlert } from '../utils/validation';
 
 const weekdayLabels = ['日', '一', '二', '三', '四', '五', '六'];
 
@@ -59,6 +61,8 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
   const [draftTitle, setDraftTitle] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
+  const draftInputRef = useRef<TextInput>(null);
+  const { scrollRef, onSectionLayout, scrollToSection } = useScrollToSection();
 
   const datesWithTodos = useMemo(() => getDatesWithTodos(todos), [todos]);
   const calendarCells = useMemo(
@@ -91,6 +95,15 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
   }
 
   function handleCreateTodo() {
+    const missingField = getFirstMissingField([{ label: '代辦內容', value: draftTitle }]);
+
+    if (missingField) {
+      showValidationAlert(`請輸入${missingField}！`);
+      scrollToSection();
+      draftInputRef.current?.focus();
+      return;
+    }
+
     const nextTodos = createTodo(draftTitle, selectedDate);
 
     setTodos(nextTodos);
@@ -111,6 +124,13 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
       return;
     }
 
+    const missingField = getFirstMissingField([{ label: '代辦內容', value: editingTitle }]);
+
+    if (missingField) {
+      showValidationAlert(`請輸入${missingField}！`);
+      return;
+    }
+
     setTodos(updateTodoTitle(editingId, editingTitle));
     setEditingId(null);
     setEditingTitle('');
@@ -126,8 +146,8 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <Screen>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.container}>
         <View style={styles.topBar}>
           <Pressable
             accessibilityRole="button"
@@ -220,8 +240,9 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
             新增目標日期：{formatSelectedDateLabel(selectedDate)}
           </Text>
 
-          <View style={styles.addRow}>
+          <View onLayout={onSectionLayout} style={styles.addRow}>
             <TextInput
+              ref={draftInputRef}
               accessibilityLabel="新增代辦標題"
               onChangeText={setDraftTitle}
               onSubmitEditing={handleCreateTodo}
@@ -320,7 +341,7 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
@@ -332,10 +353,6 @@ function formatSelectedDateLabel(dateValue: ISODateString) {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: theme.background
-  },
   container: {
     flexGrow: 1,
     paddingHorizontal: 20,

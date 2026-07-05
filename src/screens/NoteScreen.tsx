@@ -1,7 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,6 +8,8 @@ import {
   View
 } from 'react-native';
 
+import { Screen } from '../components/Screen';
+import { useScrollToSection } from '../hooks/useScrollToSection';
 import {
   defaultNoteCategory,
   noteCategories,
@@ -27,6 +28,12 @@ import {
 import { monoFont, textFont, theme } from '../theme';
 import type { ISODateString, NoteItem } from '../types/models';
 import { formatISODate } from '../utils/date';
+import {
+  getDateValidationMessage,
+  getFirstMissingField,
+  normalizeISODateString,
+  showValidationAlert
+} from '../utils/validation';
 
 type NoteScreenProps = {
   onBack: () => void;
@@ -53,6 +60,8 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<NoteFilter>(noteFilterAll);
+  const titleInputRef = useRef<TextInput>(null);
+  const { scrollRef, onSectionLayout, scrollToSection } = useScrollToSection();
 
   const sortedNotes = useMemo(() => getNotesSortedByDateDesc(notes), [notes]);
   const filteredNotes = useMemo(() => {
@@ -62,6 +71,19 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
 
     return sortedNotes.filter((note) => note.category === categoryFilter);
   }, [categoryFilter, sortedNotes]);
+
+  useEffect(() => {
+    if (!showForm) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      scrollToSection();
+      titleInputRef.current?.focus();
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [showForm, scrollToSection]);
 
   function resetForm() {
     setForm(emptyForm(today));
@@ -89,14 +111,34 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
   }
 
   function handleSaveNote() {
-    if (!form.title.trim()) {
+    const missingField = getFirstMissingField([
+      { label: '標題', value: form.title },
+      { label: '描述', value: form.description }
+    ]);
+
+    if (missingField) {
+      showValidationAlert(`請輸入${missingField}！`);
+      scrollToSection();
       return;
     }
 
+    const dateMessage = getDateValidationMessage(form.date);
+
+    if (dateMessage) {
+      showValidationAlert(dateMessage);
+      scrollToSection();
+      return;
+    }
+
+    const draft = {
+      ...form,
+      date: normalizeISODateString(form.date)
+    };
+
     if (editingId) {
-      setNotes(updateNote(editingId, form));
+      setNotes(updateNote(editingId, draft));
     } else {
-      setNotes(createNote(form));
+      setNotes(createNote(draft));
     }
 
     resetForm();
@@ -118,8 +160,8 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <Screen>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.container}>
         <View style={styles.topBar}>
           <Pressable
             accessibilityRole="button"
@@ -180,11 +222,12 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
         </View>
 
         {showForm ? (
-          <View style={styles.formCard}>
+          <View onLayout={onSectionLayout} style={styles.formCard}>
             <Text style={styles.formTitle}>{editingId ? '編輯筆記' : '新增筆記'}</Text>
 
             <Text style={styles.fieldLabel}>標題</Text>
             <TextInput
+              ref={titleInputRef}
               accessibilityLabel="筆記標題"
               onChangeText={(value) => updateFormField('title', value)}
               placeholder="輸入標題"
@@ -294,15 +337,11 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: theme.background
-  },
   container: {
     flexGrow: 1,
     paddingHorizontal: 20,

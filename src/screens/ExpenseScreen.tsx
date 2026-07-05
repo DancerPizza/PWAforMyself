@@ -1,7 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,6 +8,8 @@ import {
   View
 } from 'react-native';
 
+import { Screen } from '../components/Screen';
+import { useScrollToSection } from '../hooks/useScrollToSection';
 import {
   defaultExpenseCategory,
   defaultIncomeCategory,
@@ -33,6 +34,12 @@ import {
 import { monoFont, textFont, theme } from '../theme';
 import type { ExpenseItem, ExpenseType, ISODateString } from '../types/models';
 import { formatISODate, getDefaultDateForMonth, getMonthLabel } from '../utils/date';
+import {
+  getDateValidationMessage,
+  getFirstMissingField,
+  normalizeISODateString,
+  showValidationAlert
+} from '../utils/validation';
 
 type ExpenseScreenProps = {
   onBack: () => void;
@@ -86,6 +93,8 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
   const [form, setForm] = useState<ExpenseFormState>(() =>
     emptyForm(currentYear, currentMonthIndex, today)
   );
+  const amountInputRef = useRef<TextInput>(null);
+  const { scrollRef, onSectionLayout, scrollToSection } = useScrollToSection();
 
   const monthsWithExpenses = useMemo(
     () => getMonthsWithExpenses(expenses, visibleYear),
@@ -103,6 +112,19 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
     () => getCategoryTotals(expenses, visibleYear, selectedMonthIndex, 'expense'),
     [expenses, selectedMonthIndex, visibleYear]
   );
+
+  useEffect(() => {
+    if (!showForm) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      scrollToSection();
+      amountInputRef.current?.focus();
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [showForm, scrollToSection]);
 
   function openMonth(monthIndex: number) {
     setSelectedMonthIndex(monthIndex);
@@ -143,9 +165,27 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
   }
 
   function handleSaveExpense() {
+    const missingField = getFirstMissingField([{ label: '金額', value: form.amount }]);
+
+    if (missingField) {
+      showValidationAlert(`請輸入${missingField}！`);
+      scrollToSection();
+      return;
+    }
+
     const amount = Number(form.amount);
 
     if (!Number.isFinite(amount) || amount <= 0) {
+      showValidationAlert('請輸入有效的金額！');
+      scrollToSection();
+      return;
+    }
+
+    const dateMessage = getDateValidationMessage(form.date);
+
+    if (dateMessage) {
+      showValidationAlert(dateMessage);
+      scrollToSection();
       return;
     }
 
@@ -153,7 +193,7 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
       type: form.type,
       amount,
       category: form.category,
-      date: form.date,
+      date: normalizeISODateString(form.date),
       note: form.note
     };
 
@@ -193,8 +233,8 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <Screen>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.container}>
         <View style={styles.topBar}>
           <Pressable
             accessibilityRole="button"
@@ -294,7 +334,7 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
             </View>
 
             {showForm ? (
-              <View style={styles.formCard}>
+              <View onLayout={onSectionLayout} style={styles.formCard}>
                 <Text style={styles.formTitle}>{editingId ? '編輯紀錄' : '新增紀錄'}</Text>
 
                 <Text style={styles.fieldLabel}>類型</Text>
@@ -338,6 +378,7 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
 
                 <Text style={styles.fieldLabel}>金額</Text>
                 <TextInput
+                  ref={amountInputRef}
                   accessibilityLabel="金額"
                   keyboardType="numeric"
                   onChangeText={(value) => updateFormField('amount', value)}
@@ -456,15 +497,11 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
           </>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: theme.background
-  },
   container: {
     flexGrow: 1,
     paddingHorizontal: 20,

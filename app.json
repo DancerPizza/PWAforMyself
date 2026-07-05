@@ -13,7 +13,14 @@
     },
     "web": {
       "bundler": "metro",
-      "output": "single"
+      "output": "single",
+      "favicon": "./assets/icon-512.png",
+      "name": "Expo PWA Tools",
+      "shortName": "PWA Tools",
+      "themeColor": "#23272e",
+      "backgroundColor": "#23272e",
+      "display": "standalone",
+      "orientation": "portrait"
     }
   }
 }

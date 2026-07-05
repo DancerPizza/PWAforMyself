@@ -1,5 +1,6 @@
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { Screen } from '../components/Screen';
 import { toolEntries } from '../data/tools';
 import { monoFont, textFont, theme } from '../theme';
 import type { ToolId } from '../types/tool';
@@ -10,14 +11,16 @@ type HomeScreenProps = {
 
 export function HomeScreen({ onOpenTool }: HomeScreenProps) {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.eyebrow}>Offline PWA Toolkit</Text>
-          <Text style={styles.title}>個人極簡工具集</Text>
-          <Text style={styles.description}>
-            三項 MVP 功能皆可使用，資料存於本地端。
-          </Text>
+    <Screen>
+      <View style={styles.page}>
+        <View style={styles.introSection}>
+          <View style={styles.header}>
+            <Text style={styles.eyebrow}>Offline PWA Toolkit</Text>
+            <Text style={styles.title}>個人極簡工具集</Text>
+            <Text style={styles.description}>
+              三項 MVP 功能皆可使用，資料存於本地端。
+            </Text>
+          </View>
         </View>
 
         <View style={styles.cardList}>
@@ -37,30 +40,39 @@ export function HomeScreen({ onOpenTool }: HomeScreenProps) {
                 ]}
               >
                 <View style={styles.cardHeader}>
-                  <Text style={styles.cardTitle}>{tool.title}</Text>
+                  <Text numberOfLines={1} style={styles.cardTitle}>
+                    {tool.title}
+                  </Text>
                   <Text style={[styles.statusLabel, isReady && styles.statusLabelReady]}>
                     {tool.statusLabel}
                   </Text>
                 </View>
-                <Text style={styles.cardSubtitle}>{tool.subtitle}</Text>
+                <Text numberOfLines={2} style={styles.cardSubtitle}>
+                  {tool.subtitle}
+                </Text>
               </Pressable>
             );
           })}
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  page: {
     flex: 1,
-    backgroundColor: theme.background
+    width: '100%',
+    maxWidth: '100%',
+    overflow: 'hidden',
+    paddingHorizontal: 16,
+    paddingVertical: 12
   },
-  container: {
-    flexGrow: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 32
+  introSection: {
+    flex: 1,
+    justifyContent: 'center',
+    minHeight: 0,
+    width: '100%'
   },
   header: {
     borderColor: theme.border,
@@ -68,42 +80,52 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     boxShadow: '0 16px 36px rgba(0, 0, 0, 0.22)',
     backgroundColor: theme.surface,
-    marginBottom: 28,
-    padding: 22
+    justifyContent: 'center',
+    padding: 20,
+    width: '100%'
   },
   eyebrow: {
     color: theme.green,
     fontFamily: monoFont,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.8,
-    marginBottom: 8,
+    marginBottom: 6,
     textTransform: 'uppercase'
   },
   title: {
     color: theme.text,
     fontFamily: textFont,
-    fontSize: 34,
+    fontSize: 28,
     fontWeight: '600',
-    lineHeight: 42,
-    marginBottom: 12
+    lineHeight: 34,
+    marginBottom: 8
   },
   description: {
     color: theme.mutedText,
     fontFamily: textFont,
-    fontSize: 16,
-    lineHeight: 24
+    fontSize: 15,
+    lineHeight: 22
   },
   cardList: {
-    gap: 14
+    flex: 2,
+    gap: 10,
+    minHeight: 0,
+    width: '100%'
   },
   card: {
     backgroundColor: theme.surfaceElevated,
     borderColor: theme.border,
-    borderRadius: 22,
+    borderRadius: 20,
     borderWidth: 1,
     boxShadow: '0 12px 26px rgba(0, 0, 0, 0.2)',
-    padding: 20
+    flex: 1,
+    justifyContent: 'center',
+    minHeight: 0,
+    overflow: 'hidden',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    width: '100%'
   },
   cardDisabled: {
     opacity: 0.55
@@ -116,15 +138,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10
+    marginBottom: 8,
+    width: '100%'
   },
   cardTitle: {
     color: theme.yellow,
     flex: 1,
+    flexShrink: 1,
     fontFamily: textFont,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
-    marginRight: 12
+    marginRight: 8,
+    minWidth: 0
   },
   statusLabel: {
     backgroundColor: theme.background,
@@ -132,12 +157,13 @@ const styles = StyleSheet.create({
     borderColor: theme.pink,
     borderWidth: 1,
     color: theme.pink,
+    flexShrink: 0,
     fontFamily: monoFont,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     overflow: 'hidden',
-    paddingHorizontal: 10,
-    paddingVertical: 6
+    paddingHorizontal: 8,
+    paddingVertical: 4
   },
   statusLabelReady: {
     borderColor: theme.green,
@@ -146,7 +172,7 @@ const styles = StyleSheet.create({
   cardSubtitle: {
     color: theme.cyan,
     fontFamily: textFont,
-    fontSize: 15,
-    lineHeight: 22
+    fontSize: 14,
+    lineHeight: 20
   }
 });

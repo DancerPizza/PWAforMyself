@@ -21,10 +21,20 @@
 
 ```bash
 npm install
-npm run web
+npm run web          # 日常開發預覽
+npm run build:web    # 產出 dist/（含 manifest、Service Worker）
 ```
 
-手機即時預覽可使用 Expo Go 或 Expo Tunnel；若 App Store 無法更新 Expo Go，改以瀏覽器開發工具模擬 iPhone 尺寸。
+手機即時預覽以 Web 為主（`npm run web` + 瀏覽器開發工具模擬 iPhone）；Expo Go 因 App Store 無最新版不再使用。
+
+### PWA 實機測試（M6）
+
+```bash
+npm run build:web
+npx serve dist
+```
+
+以 iPhone Safari 開啟區網 URL → 分享 → 加入主畫面。斷網後確認 App 可開啟且 localStorage 資料可讀寫。
 
 ## 環境檢查
 
@@ -36,7 +46,7 @@ npx expo install --check
 npm run typecheck
 ```
 
-目前本機版本基準為 Node.js `v22.23.1`、npm `10.9.8`、Expo SDK `56.0.12`、Expo CLI `56.1.16`。
+目前本機版本基準為 Node.js `v22.23.1`、npm `10.9.8`、Expo SDK `56.0.14`、Expo CLI `56.1.18`。
 
 ## 技術棧
 

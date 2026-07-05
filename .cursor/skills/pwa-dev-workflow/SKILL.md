@@ -2,6 +2,7 @@
 name: pwa-dev-workflow
 description: Guides development for this personal offline Expo PWA tool project. Use when implementing features, updating docs, planning MVP work, choosing storage, or preparing Git steps for the PWA app.
 disable-model-invocation: true
+last_updated: 2026-07-05
 ---
 
 # PWA Dev Workflow
@@ -15,16 +16,15 @@ disable-model-invocation: true
 
 ## 工作流程
 
-1. 先讀取 `.cursorrules.md`、`docs/product/Spec.md`、`docs/process/workflow.md`。
-2. 接著讀取 `docs/agent/AGENTS.md` 與 `docs/process/Project_Log.md`。
-3. 確認需求是否屬於 MVP。
-4. 若有多種非破壞性方案，使用選項彈窗讓使用者決定。
-5. 破壞性指令需先列出完整影響清單並等待確認。
-6. 優先使用 Expo、React、React Native Web、TypeScript 與瀏覽器本地能力。
-7. MVP 儲存優先使用 `localStorage`，圖片、畫布或大量資料再評估 IndexedDB。
-8. 避免加入登入、雲端同步、自動提醒、推播通知、SQLite 或原生通知。
-9. 完成實作後，同步更新 `docs/process/Project_Log.md`。
-10. 若階段任務或產品方向改變，同步更新 `docs/product/Spec.md` 與 `docs/agent/AGENTS.md`。
+1. 依 `.cursorrules.md` §開工讀檔規則 讀取必要文件（不在此重複定義順序）。
+2. 確認需求是否屬於 MVP。
+3. 若有多種非破壞性方案，依 `.cursorrules.md` §操作確認規則 使用選項彈窗。
+4. 破壞性指令依 `.cursorrules.md` §操作確認規則 列出影響清單並等待確認。
+5. 優先使用 Expo、React、React Native Web、TypeScript 與瀏覽器本地能力。
+6. MVP 儲存優先使用 `localStorage`，圖片、畫布或大量資料再評估 IndexedDB。
+7. 避免加入登入、雲端同步、自動提醒、推播通知、SQLite 或原生通知。
+8. 完成實作後，同步更新 `docs/process/Project_Log.md`。
+9. 若階段任務或產品方向改變，同步更新 `docs/product/Spec.md` 與 `docs/agent/AGENTS.md`。
 
 ## 裝置資訊
 
@@ -43,8 +43,8 @@ disable-model-invocation: true
 - `docs/product/Spec.md`：產品目的、技術棧、工具選用、階段性任務。
 - `docs/process/Project_Log.md`：以 `[yyyy-mm-dd]` 區塊記錄實作日誌，同類進度以 `[標籤]` 合併。
 - `docs/agent/AGENTS.md`：Agent 準則與目前進度。
-- `docs/process/workflow.md`：個人離線開發流程與 Git 步驟。
-- `.cursorrules.md`：固定規則與使用者偏好。
+- `docs/process/workflow.md`：位於 `docs/process/`，條列式個人離線開發流程與 Git 步驟。
+- `.cursorrules.md`：固定規則與使用者偏好；開工讀檔與衝突優先序以此為準。
 
 ## Git 建議
 
