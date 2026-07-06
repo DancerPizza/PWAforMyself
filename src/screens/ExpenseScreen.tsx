@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -9,6 +8,7 @@ import {
 } from 'react-native';
 
 import { Screen } from '../components/Screen';
+import { ScreenScroll } from '../components/ScreenScroll';
 import { useScrollToSection } from '../hooks/useScrollToSection';
 import {
   defaultExpenseCategory,
@@ -35,6 +35,7 @@ import { monoFont, textFont, theme } from '../theme';
 import type { ExpenseItem, ExpenseType, ISODateString } from '../types/models';
 import { formatISODate, getDefaultDateForMonth, getMonthLabel } from '../utils/date';
 import {
+  confirmAction,
   getDateValidationMessage,
   getFirstMissingField,
   normalizeISODateString,
@@ -207,6 +208,10 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
   }
 
   function handleDeleteExpense(id: string) {
+    if (!confirmAction('確定要刪除這筆收支紀錄嗎？')) {
+      return;
+    }
+
     setExpenses(deleteExpense(id));
 
     if (editingId === id) {
@@ -234,7 +239,7 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
 
   return (
     <Screen>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.container}>
+      <ScreenScroll ref={scrollRef} contentContainerStyle={styles.container}>
         <View style={styles.topBar}>
           <Pressable
             accessibilityRole="button"
@@ -496,7 +501,7 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
             </View>
           </>
         )}
-      </ScrollView>
+      </ScreenScroll>
     </Screen>
   );
 }

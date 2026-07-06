@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import {
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -9,6 +8,7 @@ import {
 } from 'react-native';
 
 import { Screen } from '../components/Screen';
+import { ScreenScroll } from '../components/ScreenScroll';
 import { useScrollToSection } from '../hooks/useScrollToSection';
 import {
   createTodo,
@@ -28,7 +28,7 @@ import {
   getMonthLabel,
   parseISODate
 } from '../utils/date';
-import { getFirstMissingField, showValidationAlert } from '../utils/validation';
+import { getFirstMissingField, confirmAction, showValidationAlert } from '../utils/validation';
 
 const weekdayLabels = ['日', '一', '二', '三', '四', '五', '六'];
 
@@ -137,6 +137,10 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
   }
 
   function handleDeleteTodo(id: string) {
+    if (!confirmAction('確定要刪除這項代辦嗎？')) {
+      return;
+    }
+
     setTodos(deleteTodo(id));
 
     if (editingId === id) {
@@ -147,7 +151,7 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
 
   return (
     <Screen>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.container}>
+      <ScreenScroll ref={scrollRef} contentContainerStyle={styles.container}>
         <View style={styles.topBar}>
           <Pressable
             accessibilityRole="button"
@@ -340,7 +344,7 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
             })}
           </View>
         </View>
-      </ScrollView>
+      </ScreenScroll>
     </Screen>
   );
 }

@@ -1,5 +1,13 @@
 # Project Log
 
+## [2026-07-07]
+
+- [部署] 批次 B 完成：GitHub Pages HTTPS 上線、iPhone 主畫面安裝通過
+- [驗收] 批次 A 部分完成：離線讀寫 `localStorage` 通過
+- [已知問題] **PWA-001**：獨立 PWA 重開後功能頁無法滑動；點輸入框後恢復；多輪修復未解，暫緩
+- [功能] 批次 D 開始：刪除代辦／筆記／收支前 `confirm` 確認
+- [技術] 新增 `ScreenScroll.web.tsx`、`pwaScrollRecovery`（PWA-001 緩解嘗試，效果不足）
+
 ## [2026-07-06]
 
 - [文件] 文件架構遷移：`.cursorrules.md` 與 `docs/agent/AGENTS.md` 合併為根目錄 `AGENTS.md`（單一權威）

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -9,6 +8,7 @@ import {
 } from 'react-native';
 
 import { Screen } from '../components/Screen';
+import { ScreenScroll } from '../components/ScreenScroll';
 import { useScrollToSection } from '../hooks/useScrollToSection';
 import {
   defaultNoteCategory,
@@ -29,6 +29,7 @@ import { monoFont, textFont, theme } from '../theme';
 import type { ISODateString, NoteItem } from '../types/models';
 import { formatISODate } from '../utils/date';
 import {
+  confirmAction,
   getDateValidationMessage,
   getFirstMissingField,
   normalizeISODateString,
@@ -145,6 +146,10 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
   }
 
   function handleDeleteNote(id: string) {
+    if (!confirmAction('確定要刪除這則筆記嗎？')) {
+      return;
+    }
+
     setNotes(deleteNote(id));
 
     if (editingId === id) {
@@ -161,7 +166,7 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
 
   return (
     <Screen>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.container}>
+      <ScreenScroll ref={scrollRef} contentContainerStyle={styles.container}>
         <View style={styles.topBar}>
           <Pressable
             accessibilityRole="button"
@@ -336,7 +341,7 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
             </View>
           ))}
         </View>
-      </ScrollView>
+      </ScreenScroll>
     </Screen>
   );
 }

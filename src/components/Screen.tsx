@@ -10,6 +10,7 @@ type ScreenProps = {
 // Web PWA：以 env(safe-area-inset-*) 補齊 iPhone 滿版與底部 Home 指示條區域
 const safeAreaStyle = {
   flex: 1,
+  minHeight: 0,
   width: '100%',
   maxWidth: '100%',
   overflow: 'hidden',

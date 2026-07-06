@@ -1,8 +1,10 @@
 import { useCallback, useRef } from 'react';
-import type { LayoutChangeEvent, ScrollView } from 'react-native';
+import type { LayoutChangeEvent } from 'react-native';
+
+import type { ScreenScrollRef } from '../components/ScreenScroll';
 
 export function useScrollToSection() {
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ScreenScrollRef>(null);
   const sectionOffsetRef = useRef(0);
 
   const onSectionLayout = useCallback((event: LayoutChangeEvent) => {

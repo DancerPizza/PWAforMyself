@@ -32,6 +32,14 @@ export function showValidationAlert(message: string) {
   Alert.alert('提醒', message);
 }
 
+export function confirmAction(message: string) {
+  if (Platform.OS === 'web') {
+    return window.confirm(message);
+  }
+
+  return false;
+}
+
 export function getFirstMissingField(fields: FieldCheck[]) {
   return fields.find((field) => !field.value.trim())?.label ?? null;
 }

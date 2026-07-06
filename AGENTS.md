@@ -1,6 +1,6 @@
 # Cursor Agent 指南 - PWA 極簡工具集
 
-> `last_updated`: 2026-07-06
+> `last_updated`: 2026-07-07
 
 ## 角色定位
 
@@ -190,24 +190,31 @@
 
 > MVP 功能（M0–M6 程式）已完成。以下為待辦批次，建議一次交付一整批給 Agent。
 
+### 已知問題（暫緩修復）
+
+| 編號 | 現象 | 環境 | 狀態 |
+|------|------|------|------|
+| **PWA-001** | 從主畫面重開 App 後，功能頁無法上下滑動；點任意輸入框後恢復；再重開問題重現 | iPhone 17、iOS 26.5、Safari 獨立 PWA、HTTPS | 已嘗試 `ScreenScroll`、`pwaScrollRecovery` 等多輪修復，**未解**；不影響資料讀寫與按鈕操作 |
+
+**暫時迴避**：重開後若無法滑動，點一下任意輸入框即可恢復。
+
 ### 批次 A — M6 收尾
 
-- [ ] 正式 HTTPS 離線驗收（依批次 B 上線後執行）
+- [x] 正式 HTTPS 離線驗收（讀寫 `localStorage` 通過；滑動見 PWA-001）
+- [x] 斷網後可寫入、重開後資料仍在
 
-### 批次 B — GitHub Pages 部署（下次開工前，優先）
+### 批次 B — GitHub Pages 部署
 
-- 正式網址（上線後）：`https://dancerpizza.github.io/PWAforMyself/`
+- 正式網址：`https://dancerpizza.github.io/PWAforMyself/`
 - `experiments.baseUrl`：`/PWAforMyself`
-- **目前狀態**：repo 為 Private，免費帳號無法啟用 Pages；workflow 已就緒，尚未部署。
 
 - [x] 新增 `.github/workflows/deploy-pages.yml`
 - [x] 設定 `baseUrl`、相對路徑 manifest / Service Worker
 - [x] `dist/.nojekyll`（避免 Jekyll 忽略 `_expo`）
-- [ ] 將 repo 改為 **Public**（Settings → General → Change visibility）
-- [ ] Settings → Pages → Source 選 **GitHub Actions**
-- [ ] push `main` 後確認 Actions 部署成功
-- [ ] iPhone Safari 開啟 HTTPS 網址 → 加入主畫面
-- [ ] 斷網驗收：關閉 PC 後仍可從主畫面開啟並讀寫資料
+- [x] repo 改 Public、Pages 啟用 GitHub Actions
+- [x] Actions 部署成功
+- [x] iPhone Safari 開啟 HTTPS 網址 → 加入主畫面
+- [x] 斷網驗收：關閉 PC 後仍可從主畫面開啟並讀寫資料
 
 ### 批次 C — 筆記圖片（第二階段）
 
@@ -218,7 +225,7 @@
 
 ### 批次 D — UX 拋光
 
-- [ ] 刪除代辦／筆記／收支前確認對話框
+- [x] 刪除代辦／筆記／收支前確認對話框
 - [ ] 日期欄位格式提示強化（可選：日期選擇器）
 - [ ] 共用表單欄位元件（可選，減少三畫面重複）
 

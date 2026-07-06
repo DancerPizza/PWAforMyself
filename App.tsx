@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { usePwaScrollRecovery } from './src/hooks/usePwaScrollRecovery';
 import { ExpenseScreen } from './src/screens/ExpenseScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { NoteScreen } from './src/screens/NoteScreen';
@@ -9,6 +10,7 @@ import type { ToolId } from './src/types/tool';
 type AppRoute = 'home' | ToolId;
 
 export default function App() {
+  usePwaScrollRecovery();
   const [route, setRoute] = useState<AppRoute>('home');
 
   if (route === 'todos') {
