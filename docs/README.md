@@ -21,7 +21,7 @@ iPhone Safari 開啟 → 分享 → **加入主畫面**。
 | D | UX 拋光 | 未開始 |
 | E | 資料匯出匯入 | 未開始 |
 
-詳見 [agent/AGENTS.md](./agent/AGENTS.md) §未完成進度（依批次）。
+詳見 [AGENTS.md](../AGENTS.md) §未完成進度（依批次）。
 
 ## 功能概要
 
@@ -33,10 +33,10 @@ iPhone Safari 開啟 → 分享 → **加入主畫面**。
 
 ## 文件
 
-- [product/Spec.md](./product/Spec.md)：產品目的、技術棧、工具選用與階段性任務。
+- [AGENTS.md](../AGENTS.md)：操作規則、Agent 準則與進度追蹤。
+- [product/Spec.md](./product/Spec.md)：產品目的、技術棧、資料模型與驗收條件。
 - [process/Project_Log.md](./process/Project_Log.md)：實作日誌。
 - [process/workflow.md](./process/workflow.md)：個人離線開發流程與 Git 步驟。
-- [agent/AGENTS.md](./agent/AGENTS.md)：Cursor Agent 開發準則與進度追蹤。
 
 ## 開發快速開始
 
@@ -79,11 +79,11 @@ npx expo install --check
 npm run typecheck
 ```
 
-目前本機版本基準為 Node.js `v22.23.1`、npm `10.9.8`、Expo SDK `56.0.14`、Expo CLI `56.1.18`。
+版本基準見 [AGENTS.md](../AGENTS.md) §開發環境。
 
 ## 技術棧
 
-Expo、React、React Native Web、TypeScript、PWA、localStorage、IndexedDB。
+詳見 [product/Spec.md](./product/Spec.md) §技術棧。
 
 ## UI 顏色與字樣
 
@@ -96,4 +96,4 @@ Expo、React、React Native Web、TypeScript、PWA、localStorage、IndexedDB。
 - `src/screens/ExpenseScreen.tsx` — 收支字樣；`incomeText`、`expenseText`、`cardHint`
 - `src/data/expenseCategories.ts` — 收支分類選項
 - `src/components/ExpensePieChart.tsx` — `segmentColors`
-- `docs/agent/AGENTS.md`、`docs/product/Spec.md` — 產品規格文字（非 UI）
+- `AGENTS.md`、`docs/product/Spec.md` — 產品規格文字（非 UI）

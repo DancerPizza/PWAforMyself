@@ -14,11 +14,34 @@
 - App 應可透過 iPhone Safari 加到主畫面。
 - 資料存於手機本地端，初期不做帳號、雲端同步、自動提醒或推播通知。
 - 目前方向為 PWA，不做行事曆提醒或原生通知功能，但功能頁可使用月曆、年曆作為資料瀏覽 UI。
+- PWA 優先使用瀏覽器本地能力，不引入不必要的原生功能。
+- 日常開發預覽以 Web（`npm run web`）與瀏覽器開發工具模擬 iPhone 為主。
+- Expo Go / Tunnel 因 App Store 無最新版，不再作為日常預覽方式。
 
 ## 操作確認規則
 
-- 破壞性指令、選項彈窗觸發條件：依 `.cursorrules.md` §操作確認規則 執行，不在此重複定義。
-- 文件衝突優先序：依 `.cursorrules.md` §開工讀檔規則 › 文件衝突優先序 執行。
+- 只有破壞性指令需要再次詢問使用者。
+- 破壞性指令包含刪除、覆寫、重命名、不可逆 Git 操作、清理檔案、批次移動檔案。
+- 執行破壞性指令前，必須列出完整影響清單、操作動機與風險，等待使用者明確回覆「確認」或「ok」。
+- 非破壞性指令不需要等待使用者文字確認，可直接執行。
+- 非破壞性決策若有多種合理方案，只需使用選項彈窗讓使用者點選，不需再等待「確認」或「ok」。
+- 禁止對專案根目錄以外的路徑執行寫入或刪除。
+
+## 開工讀檔規則
+
+本節為開工讀檔的**唯一權威來源**；其他文件僅引用，不重複定義順序。
+
+1. 讀取 `AGENTS.md`（本檔）。
+2. 讀取 `docs/product/Spec.md`。
+3. 讀取 `docs/process/workflow.md`（位於 `docs/process/`，條列式開發與 Git 步驟；若檔案不存在，回報使用者）。
+4. 讀取 `docs/process/Project_Log.md`。
+5. 若任務涉及 PWA 開發流程，讀取 `.cursor/skills/pwa-dev-workflow/SKILL.md`。
+
+### 文件衝突優先序
+
+- 文件內容衝突：`AGENTS.md` > `docs/product/Spec.md` > `.cursor/skills/pwa-dev-workflow/SKILL.md` > `docs/process/workflow.md`。
+- 操作規則衝突：以本檔 §操作確認規則 為準。
+- 仍不確定：使用選項彈窗詢問使用者。
 
 ## 技術選用
 
@@ -30,7 +53,7 @@
 | PWA | Manifest + Service Worker | 支援安裝與基本離線能力 |
 | MVP 儲存 | localStorage | 儲存簡單 JSON 資料 |
 | 進階儲存 | IndexedDB | 第二階段處理圖片、畫布或大量資料 |
-| 手機預覽 | Web Preview + Browser DevTools | 日常開發以瀏覽器模擬 iPhone；實機 PWA 測試留待 M6 |
+| 手機預覽 | Web Preview + Browser DevTools | 日常開發以瀏覽器模擬 iPhone；實機 PWA 測試於 M6 完成 |
 
 ## 開發環境
 
@@ -43,18 +66,17 @@
 - 暫時性環境警告與 audit 紀錄見 `docs/process/Project_Log.md`。
 - 若 Expo 與 Node.js 24 發生相容性問題，改用 Node.js LTS 22。
 
-## 開發核心原則
+## 開發原則
 
 - 先完成 MVP，再提出優化方向。
-- 優先修改現有檔案，不新增冗餘抽象。
-- 優先使用 Expo、React 與瀏覽器既有能力。
-- 新增套件前先確認是否已有內建功能或現有依賴可完成需求。
-- 避免混入原生通知、SQLite、帳號系統、雲端同步與大型狀態管理。
-- 程式碼與變數命名使用英文，註解使用繁體中文。
-
-## 開工與 Context 流程
-
-- 依 `.cursorrules.md` §開工讀檔規則 執行；不在此重複定義讀檔順序。
+- 優先修改現有檔案，不無故新增冗餘檔案或抽象。
+- 優先使用 Expo、React、React Native Web、TypeScript 與瀏覽器既有能力。
+- MVP 階段優先使用 `localStorage` 儲存簡單 JSON 資料；圖片、畫布或較大資料需求明確後，再評估 IndexedDB。
+- 新增套件前，先確認是否已有內建功能或現有依賴可完成需求。
+- 避免混入原生通知、SQLite、帳號系統、雲端同步、複雜狀態管理或大型 UI 套件。
+- 若有多種解法且會明顯改變實作方向，使用選項彈窗交由使用者決定。
+- 程式碼與變數命名使用英文，註解使用繁體中文，且只在邏輯不直觀時加入。
+- 文件使用繁體中文，保持條列清楚、避免長篇散文。
 
 ## 裝置資訊
 
@@ -62,13 +84,14 @@
 - iOS ver: 26.5。
 - 主要瀏覽器為 Safari。
 - 裝置資訊用於判斷 PWA 安裝、Safari 相容性、本地儲存、圖片、畫布與觸控行為。
+- iPhone 型號、iOS 版本與主要瀏覽器建議提供一次，變更時再更新。
 
-## 專案結構整理
+## 專案結構
 
 - 允許 Agent 在專案根目錄內建立必要資料夾與整理專案結構。
 - 尚未開始開發前，不為了形式建立過多空資料夾。
-- 文件分類於 `docs/product/`、`docs/process/`、`docs/agent/`。
-- `.cursorrules.md` 保留於專案根目錄。
+- 文件分類於 `docs/product/`、`docs/process/`。
+- `AGENTS.md` 保留於專案根目錄，作為唯一跨工具權威。
 - 建立 Expo 專案後，優先以 `src/` 組織功能模組、共用元件、資料型別與本地儲存工具。
 
 ## 功能邊界
@@ -95,11 +118,11 @@
 
 ## 文件維護
 
-- `docs/product/Spec.md` 記錄產品目的、技術棧、工具選用與階段性任務。
-- `docs/process/Project_Log.md` 以 `[yyyy-mm-dd]` 區塊記錄實作日誌，同類進度以 `[標籤]` 合併（如 `[畫面]`、`[功能]`、`[文件]`、`[環境]`）。
-- `docs/process/workflow.md` 記錄個人離線開發流程與 Git 步驟。
-- `.cursorrules.md` 記錄專案固定規則與使用者偏好。
-- 每完成里程碑或改變產品方向，需同步更新上述文件。
+- `docs/product/Spec.md`：產品目的、MVP 範圍、技術棧、資料模型、驗收條件。
+- `docs/process/Project_Log.md`：以 `[yyyy-mm-dd]` 區塊記錄實作日誌，同類進度以 `[標籤]` 合併。
+- `docs/process/workflow.md`：可重複的 Git 與開發步驟。
+- `AGENTS.md`（本檔）：操作規則、讀檔順序、Agent 準則與目前進度。
+- 每完成里程碑或改變產品方向，需同步更新相關文件。
 
 ## 專案進度
 
@@ -107,8 +130,7 @@
 
 - [x] 建立 `docs/process/Project_Log.md`
 - [x] 建立 `docs/product/Spec.md`
-- [x] 建立 `.cursorrules.md`
-- [x] 更新 `docs/agent/AGENTS.md`
+- [x] 建立根目錄 `AGENTS.md`（合併原 `.cursorrules.md` 與 `docs/agent/AGENTS.md`）
 - [x] 更新 `docs/README.md`
 - [x] 建立 `docs/process/workflow.md`
 - [x] 建立專案開發流程 skill
@@ -162,7 +184,7 @@
 - [x] 實作並註冊 Service Worker
 - [x] 驗證 iPhone Safari 加到主畫面（區網 HTTP 功能驗證通過）
 - [x] 測試手機尺寸、觸控操作、表單驗證、首頁版面
-- [x] 更新 `docs/process/Project_Log.md` 與 `docs/agent/AGENTS.md` 進度
+- [x] 更新 `docs/process/Project_Log.md` 與 `AGENTS.md` 進度
 
 ## 未完成進度（依批次）
 

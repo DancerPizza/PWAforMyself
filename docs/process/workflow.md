@@ -1,6 +1,6 @@
 # Workflow
 
-> `last_updated`: 2026-07-05
+> `last_updated`: 2026-07-06
 
 ## 適用範圍
 
@@ -10,7 +10,7 @@
 
 ## 每次開工流程
 
-1. 依 `.cursorrules.md` §開工讀檔規則 讀取必要文件。
+1. 依 `AGENTS.md` §開工讀檔規則 讀取必要文件。
 2. 確認本次需求是否屬於 MVP。
 3. 使用 Git 確認工作區狀態。
 4. 只針對本次任務需要的檔案進行修改。
@@ -22,7 +22,7 @@
 ## 裝置資訊流程
 
 - iPhone 型號、iOS 版本與主要瀏覽器建議提供一次。
-- 當手機、iOS 版本或主要瀏覽器改變時，再更新 `docs/product/Spec.md`。
+- 當手機、iOS 版本或主要瀏覽器改變時，再更新 `docs/product/Spec.md` 與 `AGENTS.md` §裝置資訊。
 - 裝置資訊用於判斷 PWA 安裝、Safari 相容性、本地儲存、圖片、畫布與觸控行為。
 
 ## 開發工具檢查
@@ -37,12 +37,8 @@ npx expo install --check
 npm run typecheck
 ```
 
-- 目前已確認 Node.js `v22.23.1` 與 npm `10.9.8`。
-- 目前已確認 Git `2.51.0` 與 GitHub CLI 已安裝。
-- 目前已確認 Expo CLI `56.1.18`，Expo SDK `56.0.14`。
-- React、React DOM 與 React Native 版本需通過 `npx expo install --check`。
+- 版本基準見 `AGENTS.md` §開發環境。
 - 暫時性環境警告與 `npm audit` 紀錄見 `docs/process/Project_Log.md`。
-- 若 Expo 相容性出問題，改用 Node.js LTS 22。
 
 ## Git 基本流程
 
@@ -88,25 +84,24 @@ git log --oneline --decorate -5
 2. 啟動開發伺服器：`npm run web`。
 3. 使用瀏覽器開發者工具模擬 iPhone 尺寸與觸控。
 4. Expo Go / Tunnel 因 App Store 無最新版，不再作為日常預覽方式。
-5. 實機 PWA 安裝與離線測試留待 M6（iPhone Safari 加到主畫面）。
+5. 實機 PWA 安裝與離線測試見 `AGENTS.md` §專案進度 › M6。
 
 ## 功能開發流程
 
 1. 先確認需求是否屬於 MVP。
-2. 若有多種實作方案，依 `.cursorrules.md` §操作確認規則 使用選項彈窗。
+2. 若有多種實作方案，依 `AGENTS.md` §操作確認規則 使用選項彈窗。
 3. 先完成最小可用版本。
 4. 補上必要的型別、資料儲存與基本錯誤處理。
 5. 手動測試桌面瀏覽器與手機尺寸。
 6. 更新 `docs/process/Project_Log.md` 實作紀錄。
-7. 若階段任務狀態改變，同步更新 `docs/product/Spec.md` 與 `docs/agent/AGENTS.md`。
+7. 若階段任務狀態改變，同步更新 `AGENTS.md` §專案進度；若產品規格改變，同步更新 `docs/product/Spec.md`。
 
 ## 文件更新流程
 
-1. `docs/product/Spec.md` 記錄產品方向、技術選型與階段性任務。
-2. `docs/process/Project_Log.md` 以 `[yyyy-mm-dd]` 區塊記錄實作日誌，同類進度以 `[標籤]` 合併。
-3. `docs/agent/AGENTS.md` 記錄 Agent 開發準則與目前進度。
-4. `.cursorrules.md` 記錄專案固定規則與操作偏好。
-5. `docs/process/workflow.md` 記錄可重複的個人開發流程。
+1. `docs/product/Spec.md`：產品方向、技術選型、資料模型、驗收條件。
+2. `docs/process/Project_Log.md`：以 `[yyyy-mm-dd]` 區塊記錄實作日誌，同類進度以 `[標籤]` 合併。
+3. `AGENTS.md`：操作規則、Agent 準則與目前進度。
+4. `docs/process/workflow.md`（本檔）：可重複的個人開發流程。
 
 ## 提交前檢查
 

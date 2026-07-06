@@ -2,6 +2,9 @@
 
 ## [2026-07-06]
 
+- [文件] 文件架構遷移：`.cursorrules.md` 與 `docs/agent/AGENTS.md` 合併為根目錄 `AGENTS.md`（單一權威）
+- [文件] `Spec.md` 移除 M0–M6／批次 A–E checklist，改保留資料模型與驗收條件；進度僅維護於 `AGENTS.md`
+- [文件] 新衝突優先序：`AGENTS.md` > `Spec.md` > `SKILL.md` > `workflow.md`；workflow／SKILL／README 引用已更新
 - [功能] M6 結案：實機版面、驗證提醒、圖示替換、表單捲動完成
 - [功能] M7 程式就緒：Actions workflow、`baseUrl`、`.nojekyll`；**尚未實際部署**
 - [待辦] 未完成進度改以批次 A–E 記錄於 AGENTS／Spec
