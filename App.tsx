@@ -12,18 +12,24 @@ type AppRoute = 'home' | ToolId;
 export default function App() {
   usePwaScrollRecovery();
   const [route, setRoute] = useState<AppRoute>('home');
+  const [storageVersion, setStorageVersion] = useState(0);
 
   if (route === 'todos') {
-    return <TodoScreen onBack={() => setRoute('home')} />;
+    return <TodoScreen key={storageVersion} onBack={() => setRoute('home')} />;
   }
 
   if (route === 'notes') {
-    return <NoteScreen onBack={() => setRoute('home')} />;
+    return <NoteScreen key={storageVersion} onBack={() => setRoute('home')} />;
   }
 
   if (route === 'expenses') {
-    return <ExpenseScreen onBack={() => setRoute('home')} />;
+    return <ExpenseScreen key={storageVersion} onBack={() => setRoute('home')} />;
   }
 
-  return <HomeScreen onOpenTool={(toolId) => setRoute(toolId)} />;
+  return (
+    <HomeScreen
+      onDataImported={() => setStorageVersion((version) => version + 1)}
+      onOpenTool={(toolId) => setRoute(toolId)}
+    />
+  );
 }

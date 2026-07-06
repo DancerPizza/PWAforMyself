@@ -10,7 +10,7 @@
 
 ## 核心產品方向
 
-- 主畫面提供三個功能入口：極簡代辦事項、簡易筆記本、收支紀錄。
+- 主畫面提供三個功能入口（極簡代辦事項、簡易筆記本、收支紀錄）與 JSON 匯出／匯入備份。
 - App 應可透過 iPhone Safari 加到主畫面。
 - 資料存於手機本地端，初期不做帳號、雲端同步、自動提醒或推播通知。
 - 目前方向為 PWA，不做行事曆提醒或原生通知功能，但功能頁可使用月曆、年曆作為資料瀏覽 UI。
@@ -94,6 +94,41 @@
 - `AGENTS.md` 保留於專案根目錄，作為唯一跨工具權威。
 - 建立 Expo 專案後，優先以 `src/` 組織功能模組、共用元件、資料型別與本地儲存工具。
 
+### 程式碼地圖（接手用）
+
+| 路徑 | 用途 |
+|------|------|
+| `App.tsx` | 路由（home / todos / notes / expenses）、`storageVersion` 匯入刷新 |
+| `src/screens/` | `HomeScreen`、`TodoScreen`、`NoteScreen`、`ExpenseScreen` |
+| `src/storage/` | `localStorage` helper、`todos`/`notes`/`expenses`、`backup.ts`、`noteImages.ts`（IndexedDB） |
+| `src/components/form/` | `FormField`、`FormDateField`、`formStyles` |
+| `src/components/notes/` | `NoteImagePicker`、`NoteImageThumb`、`NoteImageCarousel`、`NoteDetailView`（`.web.tsx` 為 Web 實作） |
+| `src/components/BackupActions.web.tsx` | 主畫面匯出／匯入 JSON |
+| `src/components/ScreenScroll.web.tsx` | Web 原生捲動容器（PWA-001 相關） |
+| `src/utils/pwaScrollRecovery.ts` | iOS PWA 重開捲動恢復（PWA-001，未完全解決） |
+| `src/constants/noteImages.ts` | `MAX_NOTE_IMAGES = 3` |
+| `public/` | `manifest.json`、`sw.js`、`index.html`（PWA 標籤與恢復腳本） |
+| `.github/workflows/deploy-pages.yml` | GitHub Pages 自動部署 |
+
+## 下次開工摘要
+
+> 新 Context Window 先讀本節 + §已知問題，再依 §開工讀檔規則 補讀其他文件。
+
+- **產品狀態**：M0–M6 與批次 A–E **均已完成**；無預設待辦批次。
+- **正式網址**：https://dancerpizza.github.io/PWAforMyself/（`baseUrl`：`/PWAforMyself`）
+- **日常開發**：`npm run web`；上線：`npm run build:web` → push `main` → Actions 部署
+- **主畫面**：三張功能卡僅顯示標題；比例 flex **75:10:45**（卡 25%×3、間隔 10%、匯入匯出 15%）
+- **儲存**：代辦／筆記／收支 → `localStorage`；筆記圖片 blob → IndexedDB（`imageIds` 在 `NoteItem`）
+- **備份限制**：JSON 匯出含 `imageIds`，**不含**圖片 blob；換裝置匯入後需重新選圖
+- **唯一已知 bug**：**PWA-001**（重開後無法滑動，點輸入框可暫時恢復）— 暫緩，見下節
+- **Git 備註**（2026-07-07）：`origin/main` 上 `7c99bb9`–`02c853b` 四筆同 message「修復重啟app後無法滑動」（PWA-001 嘗試，未解）；**工作區尚有未提交**之批次 C–E、主畫面簡化與本輪文件更新
+
+### 後續可選方向（無優先順序）
+
+- 修復 **PWA-001**（iOS 獨立 PWA 重開滑動）
+- 備份匯出納入 IndexedDB 圖片（或 ZIP）
+- 新功能或 UI 微調（由使用者指定）
+
 ## 功能邊界
 
 ### 極簡代辦事項
@@ -107,7 +142,8 @@
 
 - 列表檢視。
 - 支援標題、描述、日期、分類。
-- 圖片上傳、拍攝圖片與簡易畫筆列為第二階段。
+- 支援選擇圖片（最多 3 張，IndexedDB）、列表縮圖、**查看**模式（上半圖片左右滑動、下半詳情）。
+- 不做：拍照、畫筆、雲端同步。
 
 ### 收支紀錄
 
@@ -164,6 +200,8 @@
 - [x] 支援新增、編輯、刪除
 - [x] 支援標題、描述、日期與分類
 - [x] 分類篩選（生活／工作／學習）
+- [x] 圖片選擇（IndexedDB，最多 3 張）、列表縮圖
+- [x] 查看模式（上半圖片輪播、下半詳情）
 
 ### M5 收支紀錄
 
@@ -188,7 +226,7 @@
 
 ## 未完成進度（依批次）
 
-> MVP 功能（M0–M6 程式）已完成。以下為待辦批次，建議一次交付一整批給 Agent。
+> 批次 A–E 已全部完成。以下僅保留已知問題與後續可選項目。
 
 ### 已知問題（暫緩修復）
 
@@ -218,18 +256,20 @@
 
 ### 批次 C — 筆記圖片（第二階段）
 
-- [ ] 建立 IndexedDB helper（圖片 blob 儲存）
-- [ ] 筆記表單支援選擇圖片（`<input type="file">`）
-- [ ] 筆記列表顯示縮圖；`NoteItem.imageIds` 接上
+- [x] 建立 IndexedDB helper（`src/storage/noteImages.ts`）
+- [x] 筆記表單支援選擇圖片（`<input type="file">`）
+- [x] 筆記列表顯示縮圖；`NoteItem.imageIds` 接上
+- [x] 查看模式：`NoteDetailView` + `NoteImageCarousel`（最多 3 張、左右滑動）
 - 不做：拍照、畫筆、雲端同步
+- 備註：JSON 匯出僅含 `imageIds`，圖片 blob 需在同一裝置 IndexedDB
 
 ### 批次 D — UX 拋光
 
 - [x] 刪除代辦／筆記／收支前確認對話框
-- [ ] 日期欄位格式提示強化（可選：日期選擇器）
-- [ ] 共用表單欄位元件（可選，減少三畫面重複）
+- [x] 日期欄位格式提示強化（`FormDateField`）
+- [x] 共用表單欄位元件（`FormField`、`FormDateField`）
 
 ### 批次 E — 資料匯出匯入
 
-- [ ] 匯出 localStorage JSON 備份
-- [ ] 匯入 JSON 還原（覆蓋前需確認）
+- [x] 匯出 localStorage JSON 備份
+- [x] 匯入 JSON 還原（覆蓋前需確認）

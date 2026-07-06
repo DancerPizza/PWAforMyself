@@ -14,6 +14,7 @@ export type NoteDraft = {
   description: string;
   date: ISODateString;
   category: string;
+  imageIds: string[];
 };
 
 function createId() {
@@ -51,7 +52,7 @@ export function createNote(draft: NoteDraft): NoteItem[] {
     description: draft.description.trim(),
     date: draft.date,
     category: trimmedCategory || defaultNoteCategory,
-    imageIds: [],
+    imageIds: draft.imageIds,
     createdAt: now,
     updatedAt: now
   };
@@ -80,6 +81,7 @@ export function updateNote(id: string, draft: NoteDraft): NoteItem[] {
       description: draft.description.trim(),
       date: draft.date,
       category: trimmedCategory || defaultNoteCategory,
+      imageIds: draft.imageIds,
       updatedAt: now
     })
   });

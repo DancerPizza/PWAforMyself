@@ -7,8 +7,14 @@ import {
   View
 } from 'react-native';
 
+import { FormDateField } from '../components/form/FormDateField';
+import { FormField } from '../components/form/FormField';
+import { NoteDetailView } from '../components/notes/NoteDetailView';
+import { NoteImagePicker } from '../components/notes/NoteImagePicker';
+import { NoteImageThumb } from '../components/notes/NoteImageThumb';
 import { Screen } from '../components/Screen';
 import { ScreenScroll } from '../components/ScreenScroll';
+import { MAX_NOTE_IMAGES } from '../constants/noteImages';
 import { useScrollToSection } from '../hooks/useScrollToSection';
 import {
   defaultNoteCategory,
@@ -25,6 +31,7 @@ import {
   readNotes,
   updateNote
 } from '../storage/notes';
+import { deleteNoteImages } from '../storage/noteImages';
 import { monoFont, textFont, theme } from '../theme';
 import type { ISODateString, NoteItem } from '../types/models';
 import { formatISODate } from '../utils/date';
@@ -45,13 +52,15 @@ type NoteFormState = {
   description: string;
   date: ISODateString;
   category: NoteCategory;
+  imageIds: string[];
 };
 
 const emptyForm = (date: ISODateString): NoteFormState => ({
   title: '',
   description: '',
   date,
-  category: defaultNoteCategory
+  category: defaultNoteCategory,
+  imageIds: []
 });
 
 export function NoteScreen({ onBack }: NoteScreenProps) {
@@ -61,6 +70,8 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<NoteFilter>(noteFilterAll);
+  const [viewingNoteId, setViewingNoteId] = useState<string | null>(null);
+  const [originalImageIds, setOriginalImageIds] = useState<string[]>([]);
   const titleInputRef = useRef<TextInput>(null);
   const { scrollRef, onSectionLayout, scrollToSection } = useScrollToSection();
 
@@ -72,6 +83,10 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
 
     return sortedNotes.filter((note) => note.category === categoryFilter);
   }, [categoryFilter, sortedNotes]);
+  const viewingNote = useMemo(
+    () => notes.find((note) => note.id === viewingNoteId) ?? null,
+    [notes, viewingNoteId]
+  );
 
   useEffect(() => {
     if (!showForm) {
@@ -86,32 +101,40 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
     return () => clearTimeout(timer);
   }, [showForm, scrollToSection]);
 
-  function resetForm() {
+  async function resetForm() {
+    if (!editingId && form.imageIds.length > 0) {
+      await deleteNoteImages(form.imageIds);
+    }
+
     setForm(emptyForm(today));
     setEditingId(null);
+    setOriginalImageIds([]);
     setShowForm(false);
   }
 
   function handleStartCreate() {
     setEditingId(null);
+    setOriginalImageIds([]);
     setForm(emptyForm(today));
     setShowForm(true);
   }
 
   function handleStartEdit(note: NoteItem) {
     setEditingId(note.id);
+    setOriginalImageIds(note.imageIds);
     setForm({
       title: note.title,
       description: note.description,
       date: note.date,
       category: noteCategories.includes(note.category as NoteCategory)
         ? (note.category as NoteCategory)
-        : defaultNoteCategory
+        : defaultNoteCategory,
+      imageIds: note.imageIds
     });
     setShowForm(true);
   }
 
-  function handleSaveNote() {
+  async function handleSaveNote() {
     const missingField = getFirstMissingField([
       { label: '標題', value: form.title },
       { label: '描述', value: form.description }
@@ -133,8 +156,15 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
 
     const draft = {
       ...form,
-      date: normalizeISODateString(form.date)
+      date: normalizeISODateString(form.date),
+      imageIds: form.imageIds.slice(0, MAX_NOTE_IMAGES)
     };
+
+    const removedImageIds = originalImageIds.filter((id) => !form.imageIds.includes(id));
+
+    if (removedImageIds.length > 0) {
+      await deleteNoteImages(removedImageIds);
+    }
 
     if (editingId) {
       setNotes(updateNote(editingId, draft));
@@ -142,18 +172,34 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
       setNotes(createNote(draft));
     }
 
-    resetForm();
+    setForm(emptyForm(today));
+    setEditingId(null);
+    setOriginalImageIds([]);
+    setShowForm(false);
   }
 
-  function handleDeleteNote(id: string) {
+  async function handleDeleteNote(id: string) {
     if (!confirmAction('確定要刪除這則筆記嗎？')) {
       return;
     }
 
+    const target = notes.find((note) => note.id === id);
+
     setNotes(deleteNote(id));
 
+    if (target && target.imageIds.length > 0) {
+      await deleteNoteImages(target.imageIds);
+    }
+
+    if (viewingNoteId === id) {
+      setViewingNoteId(null);
+    }
+
     if (editingId === id) {
-      resetForm();
+      setForm(emptyForm(today));
+      setEditingId(null);
+      setOriginalImageIds([]);
+      setShowForm(false);
     }
   }
 
@@ -162,6 +208,23 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
       ...current,
       [key]: value
     }));
+  }
+
+  function handleViewNote(note: NoteItem) {
+    setShowForm(false);
+    setViewingNoteId(note.id);
+  }
+
+  function handleCloseView() {
+    setViewingNoteId(null);
+  }
+
+  if (viewingNote) {
+    return (
+      <Screen>
+        <NoteDetailView note={viewingNote} onBack={handleCloseView} />
+      </Screen>
+    );
   }
 
   return (
@@ -230,37 +293,37 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
           <View onLayout={onSectionLayout} style={styles.formCard}>
             <Text style={styles.formTitle}>{editingId ? '編輯筆記' : '新增筆記'}</Text>
 
-            <Text style={styles.fieldLabel}>標題</Text>
-            <TextInput
+            <FormField
               ref={titleInputRef}
               accessibilityLabel="筆記標題"
+              label="標題"
               onChangeText={(value) => updateFormField('title', value)}
               placeholder="輸入標題"
               placeholderTextColor={theme.mutedText}
-              style={styles.input}
               value={form.title}
             />
 
-            <Text style={styles.fieldLabel}>描述</Text>
-            <TextInput
+            <FormField
               accessibilityLabel="筆記描述"
+              label="描述"
               multiline
-              numberOfLines={4}
               onChangeText={(value) => updateFormField('description', value)}
               placeholder="輸入描述"
               placeholderTextColor={theme.mutedText}
-              style={[styles.input, styles.textArea]}
               value={form.description}
             />
 
-            <Text style={styles.fieldLabel}>日期（YYYY-MM-DD）</Text>
-            <TextInput
+            <FormDateField
               accessibilityLabel="筆記日期"
+              label="日期"
               onChangeText={(value) => updateFormField('date', value)}
-              placeholder="2026-07-04"
               placeholderTextColor={theme.mutedText}
-              style={styles.input}
               value={form.date}
+            />
+
+            <NoteImagePicker
+              imageIds={form.imageIds}
+              onChange={(imageIds) => updateFormField('imageIds', imageIds)}
             />
 
             <Text style={styles.fieldLabel}>分類</Text>
@@ -318,7 +381,21 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
               </View>
               <Text style={styles.noteMeta}>{note.date}</Text>
               {note.description ? <Text style={styles.noteDescription}>{note.description}</Text> : null}
+              {note.imageIds.length > 0 ? (
+                <View style={styles.noteThumbRow}>
+                  {note.imageIds.map((imageId) => (
+                    <NoteImageThumb key={imageId} imageId={imageId} size={64} />
+                  ))}
+                </View>
+              ) : null}
               <View style={styles.noteActions}>
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={() => handleViewNote(note)}
+                  style={({ pressed }) => [styles.actionButton, pressed && styles.buttonPressed]}
+                >
+                  <Text style={styles.actionButtonText}>查看</Text>
+                </Pressable>
                 <Pressable
                   accessibilityRole="button"
                   onPress={() => handleStartEdit(note)}
@@ -436,23 +513,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 6
   },
-  input: {
-    backgroundColor: theme.background,
-    borderColor: theme.border,
-    borderRadius: 14,
-    borderWidth: 1,
-    color: theme.text,
-    fontFamily: textFont,
-    fontSize: 15,
-    marginBottom: 12,
-    minHeight: 44,
-    paddingHorizontal: 14,
-    paddingVertical: 10
-  },
-  textArea: {
-    minHeight: 110,
-    textAlignVertical: 'top'
-  },
   categoryRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -550,8 +610,15 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginBottom: 12
   },
+  noteThumbRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12
+  },
   noteActions: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8
   },
   actionButton: {

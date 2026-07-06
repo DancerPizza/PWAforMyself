@@ -7,6 +7,8 @@ import {
   View
 } from 'react-native';
 
+import { FormDateField } from '../components/form/FormDateField';
+import { FormField } from '../components/form/FormField';
 import { Screen } from '../components/Screen';
 import { ScreenScroll } from '../components/ScreenScroll';
 import { useScrollToSection } from '../hooks/useScrollToSection';
@@ -369,27 +371,25 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
                   })}
                 </View>
 
-                <Text style={styles.fieldLabel}>備註</Text>
-                <TextInput
+                <FormField
                   accessibilityLabel="備註"
+                  label="備註"
+                  hint="選填"
                   multiline
-                  numberOfLines={3}
                   onChangeText={(value) => updateFormField('note', value)}
-                  placeholder="選填"
+                  placeholder="輸入備註"
                   placeholderTextColor={theme.mutedText}
-                  style={[styles.input, styles.textArea]}
                   value={form.note}
                 />
 
-                <Text style={styles.fieldLabel}>金額</Text>
-                <TextInput
+                <FormField
                   ref={amountInputRef}
                   accessibilityLabel="金額"
                   keyboardType="numeric"
+                  label="金額"
                   onChangeText={(value) => updateFormField('amount', value)}
                   placeholder="輸入金額"
                   placeholderTextColor={theme.mutedText}
-                  style={styles.input}
                   value={form.amount}
                 />
 
@@ -423,13 +423,10 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
                   })}
                 </View>
 
-                <Text style={styles.fieldLabel}>日期（YYYY-MM-DD）</Text>
-                <TextInput
+                <FormDateField
                   accessibilityLabel="日期"
                   onChangeText={(value) => updateFormField('date', value)}
-                  placeholder="2026-07-04"
                   placeholderTextColor={theme.mutedText}
-                  style={styles.input}
                   value={form.date}
                 />
 
@@ -717,23 +714,6 @@ const styles = StyleSheet.create({
   },
   typeChipTextSelected: {
     color: theme.text
-  },
-  input: {
-    backgroundColor: theme.background,
-    borderColor: theme.border,
-    borderRadius: 14,
-    borderWidth: 1,
-    color: theme.text,
-    fontFamily: textFont,
-    fontSize: 15,
-    marginBottom: 12,
-    minHeight: 44,
-    paddingHorizontal: 14,
-    paddingVertical: 10
-  },
-  textArea: {
-    minHeight: 88,
-    textAlignVertical: 'top'
   },
   categoryRow: {
     flexDirection: 'row',

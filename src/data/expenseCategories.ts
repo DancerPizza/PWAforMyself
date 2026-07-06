@@ -1,4 +1,4 @@
-export const incomeCategories = ['薪資', '兼職', '其他'] as const;
+export const incomeCategories = ['薪水', '其他'] as const;
 
 export const expenseCategories = ['飲食', '交通', '居住', '娛樂', '其他'] as const;
 
@@ -6,7 +6,7 @@ export type IncomeCategory = (typeof incomeCategories)[number];
 
 export type ExpenseCategory = (typeof expenseCategories)[number];
 
-export const defaultIncomeCategory: IncomeCategory = '薪資';
+export const defaultIncomeCategory: IncomeCategory = '薪水';
 
 export const defaultExpenseCategory: ExpenseCategory = '飲食';
 
