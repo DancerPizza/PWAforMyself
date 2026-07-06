@@ -1,6 +1,6 @@
 # Expo PWA 極簡工具集
 
-個人離線使用的 iPhone PWA 小工具集合。M0–M6 與批次 A–E 均已完成；正式網址：https://dancerpizza.github.io/PWAforMyself/
+個人離線使用的 iPhone PWA 小工具集合。**MVP 已結案**（M0–M6、批次 A–E）；正式網址：https://dancerpizza.github.io/PWAforMyself/
 
 ## 接手快速導覽
 
@@ -8,17 +8,7 @@
 2. 再依 AGENTS §開工讀檔規則 補讀 Spec、workflow、Project_Log
 3. `npm run web` 日常開發；push `main` 自動部署 GitHub Pages
 
-## 批次進度（A–E）
-
-| 批次 | 內容 | 狀態 |
-|------|------|------|
-| A | M6 HTTPS 離線驗收 | 完成（滑動見 PWA-001） |
-| B | GitHub Pages 部署 | 完成 |
-| C | 筆記圖片 / IndexedDB / 查看模式 | 完成 |
-| D | UX 拋光（刪除確認、共用表單） | 完成 |
-| E | 資料匯出匯入 | 完成 |
-
-詳見 [AGENTS.md](../AGENTS.md) §未完成進度（依批次）與 §專案進度。
+進度摘要見 [AGENTS.md](../AGENTS.md) §專案進度（摘要）。
 
 ## 功能概要
 
@@ -28,9 +18,11 @@
 - 收支紀錄：年曆、月份列表、收入／支出 CRUD、支出分類圓餅圖
 - 不做：登入、雲端同步、自動提醒、推播通知
 
-## 已知問題
+## 已知問題（PWA-SCROLL 問題群）
 
-- **PWA-001**：iOS 獨立 PWA 重開後功能頁無法滑動；點輸入框可暫時恢復。詳見 AGENTS §已知問題。
+- **PWA-001**：重開後功能頁無法上下滑動；點輸入框可暫時恢復。
+- **PWA-002**：開啟鍵盤後畫面不停被拉回、鎖在最上方。
+- 拆解、關聯與暫時迴避見 [AGENTS.md](../AGENTS.md) §已知問題。
 
 ## 文件
 
@@ -70,6 +62,7 @@ npm --version
 npx expo --version
 npx expo install --check
 npm run typecheck
+npm test
 ```
 
 版本基準見 [AGENTS.md](../AGENTS.md) §開發環境。

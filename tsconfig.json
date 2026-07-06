@@ -4,5 +4,6 @@
     "strict": true,
     "noEmit": true
   },
-  "include": ["**/*.ts", "**/*.tsx"]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["src/**/__tests__/**", "src/test/**", "node_modules"]
 }

@@ -36,6 +36,7 @@ gh --version
 npx expo --version
 npx expo install --check
 npm run typecheck
+npm test
 ```
 
 - 版本基準見 `AGENTS.md` §開發環境。
