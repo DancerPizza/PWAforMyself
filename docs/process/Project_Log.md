@@ -1,5 +1,13 @@
 # Project Log
 
+## [2026-07-13]
+
+- [實機] PWA-002 已確認修復：開啟鍵盤輸入時不再被拉回頂部
+- [診斷] PWA-001 在 `?noRecover=1` 完全停用恢復碼後仍重現，確認不是恢復碼副作用；點輸入框後滑動與縮放才恢復，推測為內層 overflow 的 touch 手勢層失效
+- [修復候選] 採方向 D：Web 改用 document 自然捲動，移除 `html`／`body`／`#root` 的垂直捲動鎖定及舊恢復機制
+- [技術] `ScreenScroll.web.tsx` 改由 `window.scrollTo` 定位；路由切換時回到頁首；`sw.js` `CACHE_NAME` → `v3`
+- [待辦] 部署後實機驗證 PWA-001、表單自動定位、鍵盤輸入與筆記查看模式版面
+
 ## [2026-07-12]
 
 - [修復] PWA-SCROLL 方向 A：`pwaScrollRecovery.ts` 與 `index.html` 移除 `focusin` staggered reset 與 `visualViewport` 的 `scrollTo(0,0)`（PWA-002 對抗來源），僅保留 `kickScrollContainers`

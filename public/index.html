@@ -18,12 +18,11 @@
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
     <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
-      /* iPhone PWA：使用 dvh 與 safe-area，避免底部露出白邊 */
+      /* iPhone PWA：由 document 自然捲動，避免冷啟動後內層 overflow 容器失效 */
       html {
-        height: 100%;
+        min-height: 100%;
         width: 100%;
         max-width: 100%;
-        overflow: hidden;
         background-color: #23272e;
       }
       body {
@@ -34,8 +33,8 @@
         min-height: 100dvh;
         min-height: -webkit-fill-available;
         background-color: #23272e;
-        overflow: hidden;
-        overscroll-behavior: none;
+        overflow-x: hidden;
+        overscroll-behavior-x: none;
       }
       #root {
         display: flex;
@@ -45,15 +44,14 @@
         min-height: 100vh;
         min-height: 100dvh;
         min-height: -webkit-fill-available;
-        height: 100%;
-        overflow: hidden;
         background-color: #23272e;
       }
       #root > * {
         display: flex;
         flex: 1;
         flex-direction: column;
-        min-height: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
         width: 100%;
       }
     </style>
@@ -66,82 +64,6 @@
     </noscript>
     <!-- The root element for your Expo app. -->
     <div id="root"></div>
-    <script>
-      (function () {
-        // 診斷旗標：?noRecover=1 完全停用捲動恢復，用於實機對照實驗（PWA-001）
-        function isRecoveryDisabled() {
-          return /[?&]noRecover(?:=|&|$)/.test(window.location.search);
-        }
-
-        if (isRecoveryDisabled()) {
-          return;
-        }
-
-        function isStandalone() {
-          return (
-            window.navigator.standalone === true ||
-            window.matchMedia('(display-mode: standalone)').matches
-          );
-        }
-
-        function resetDocumentScroll() {
-          window.scrollTo(0, 0);
-          document.documentElement.scrollTop = 0;
-          document.body.scrollTop = 0;
-        }
-
-        function kickScrollContainers() {
-          var marked = document.querySelectorAll('[data-pwa-scroll="true"]');
-          var elements = marked.length
-            ? Array.prototype.slice.call(marked)
-            : Array.prototype.slice.call(document.querySelectorAll('#root div')).filter(function (el) {
-                var overflowY = window.getComputedStyle(el).overflowY;
-                return overflowY === 'auto' || overflowY === 'scroll';
-              });
-
-          elements.forEach(function (el) {
-            var top = el.scrollTop;
-            el.style.webkitOverflowScrolling = 'touch';
-            el.style.touchAction = 'pan-y';
-            el.scrollTop = top + 1;
-            el.scrollTop = top;
-            void el.offsetHeight;
-          });
-        }
-
-        function recoverScroll() {
-          resetDocumentScroll();
-          [document.documentElement, document.body].forEach(function (el) {
-            if (el.style.position === 'fixed') {
-              el.style.position = '';
-              el.style.top = '';
-              el.style.left = '';
-              el.style.width = '';
-              el.style.height = '';
-              el.style.overflow = '';
-            }
-          });
-          kickScrollContainers();
-        }
-
-        function scheduleResumeRecovery() {
-          [0, 50, 150, 300, 500, 800].forEach(function (delay) {
-            window.setTimeout(recoverScroll, delay);
-          });
-        }
-
-        // 方向 A：focusin 僅 kick 內層容器，不再 staggeredReset；移除 visualViewport reset
-        document.addEventListener('focusin', function () {
-          if (isStandalone()) kickScrollContainers();
-        });
-        window.addEventListener('pageshow', scheduleResumeRecovery);
-        document.addEventListener('visibilitychange', function () {
-          if (document.visibilityState === 'visible') scheduleResumeRecovery();
-        });
-        window.addEventListener('online', scheduleResumeRecovery);
-        scheduleResumeRecovery();
-      })();
-    </script>
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {

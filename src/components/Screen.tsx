@@ -13,7 +13,6 @@ const safeAreaStyle = {
   minHeight: 0,
   width: '100%',
   maxWidth: '100%',
-  overflow: 'hidden',
   backgroundColor: theme.background,
   paddingTop: 'env(safe-area-inset-top)',
   paddingBottom: 'env(safe-area-inset-bottom)',
