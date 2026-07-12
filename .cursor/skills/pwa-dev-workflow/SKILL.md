@@ -2,7 +2,7 @@
 name: pwa-dev-workflow
 description: Guides development for this personal offline Expo PWA tool project. Use when implementing features, updating docs, planning MVP work, choosing storage, or preparing Git steps for the PWA app.
 disable-model-invocation: true
-last_updated: 2026-07-07
+last_updated: 2026-07-13
 ---
 
 # PWA Dev Workflow
@@ -26,11 +26,11 @@ last_updated: 2026-07-07
 8. 完成實作後，同步更新 `docs/process/Project_Log.md`。
 9. 若階段任務或產品方向改變，同步更新 `AGENTS.md` §專案進度 與 `docs/product/Spec.md`。
 
-## 功能範圍判斷（2026-07-07）
+## 功能範圍判斷（2026-07-13）
 
-- **已完成**：主畫面、三功能 CRUD、localStorage、PWA 部署、筆記圖片（IndexedDB）、查看模式、刪除確認、共用表單、JSON 匯出匯入。
-- **已知未解**：PWA-001（iOS 獨立 PWA 重開滑動失效）— 見 AGENTS §已知問題。
-- **後續可選**：PWA-001 修復、備份納入圖片 blob、使用者指定新功能。
+- **已完成**：主畫面、三功能 CRUD、localStorage、PWA 部署與離線、筆記圖片（IndexedDB）、查看模式、刪除確認、共用表單、JSON 匯出匯入、PWA-SCROLL 修復。
+- **已知未解**：PWA-LAYOUT（版面偶發輕微放大）— 見 AGENTS §已知問題。
+- **後續可選**：版面微調、備份納入圖片 blob、使用者指定新功能。
 - **不做**：登入、雲端同步、推播提醒、原生 iOS Widget、拍照、畫筆。
 
 ## 儲存約定

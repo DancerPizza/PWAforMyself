@@ -1,6 +1,6 @@
 # Cursor Agent 指南 - PWA 極簡工具集
 
-> `last_updated`: 2026-07-07
+> `last_updated`: 2026-07-13
 
 ## 角色定位
 
@@ -113,21 +113,20 @@
 
 > 新 Context Window 先讀本節 + §已知問題，再依 §開工讀檔規則 補讀其他文件。
 
-- **產品狀態**：M0–M6 與批次 A–E **均已完成**；無預設待辦批次。
+- **產品狀態**：M0–M6、批次 A–E、PWA-SCROLL **均已完成**；功能面已可日常使用。
 - **正式網址**：https://dancerpizza.github.io/PWAforMyself/（`baseUrl`：`/PWAforMyself`）
 - **日常開發**：`npm run web`；上線：`npm run build:web` → push `main` → Actions 部署
-- **主畫面**：三張功能卡僅顯示標題；比例 flex **75:10:45**（卡 25%×3、間隔 10%、匯入匯出 15%）
-- **儲存**：代辦／筆記／收支 → `localStorage`；筆記圖片 blob → IndexedDB（`imageIds` 在 `NoteItem`）
-- **備份限制**：JSON 匯出含 `imageIds`，**不含**圖片 blob；換裝置匯入後需重新選圖
-- **PWA-SCROLL**：PWA-002 已實機確認修復；PWA-001 的 `?noRecover=1` 對照仍重現，已改採方向 D（document 自然捲動）並待部署實機驗證
-- **測試**：`npm test`（20 項）；代辦／筆記／收支／備份邏輯
-- **Git**（2026-07-13）：`main` 最新 `be75aed`；工作區含方向 D 修復與文件更新待提交
+- **儲存**：代辦／筆記／收支 → `localStorage`；筆記圖片 blob → IndexedDB；斷網重開資料仍在
+- **備份限制**：JSON 匯出含 `imageIds`，**不含**圖片 blob
+- **捲動**：方向 D（document 自然捲動）實機通過；PWA-001／PWA-002 已結案
+- **測試**：`npm test`（20 項）
+- **下一待辦**：**版面微調**（偶發輕微放大，見 PWA-LAYOUT）
 
-### 後續可選方向（無優先順序）
+### 後續可選方向
 
-- **部署並實機驗證方向 D**（PWA-001 document 自然捲動）
+- **版面微調**（PWA-LAYOUT，優先）
 - 備份匯出納入 IndexedDB 圖片（或 ZIP）
-- 新功能或 UI 微調（由使用者指定）
+- 新功能（由使用者指定）
 
 ## 功能邊界
 
@@ -173,48 +172,23 @@
 | M4 筆記 | ✅ | 列表、分類、IndexedDB 圖片、查看模式 |
 | M5 收支 | ✅ | 年曆、CRUD、圓餅圖 |
 | M6 PWA | ✅ | manifest、SW、iPhone 安裝、離線讀寫 |
-| 批次 A | ✅ | HTTPS 離線驗收（捲動見已知問題） |
+| 批次 A | ✅ | HTTPS 離線驗收 |
 | 批次 B | ✅ | GitHub Pages 部署上線 |
 | 批次 C | ✅ | 筆記圖片（最多 3 張） |
 | 批次 D | ✅ | 刪除確認、共用表單元件 |
 | 批次 E | ✅ | JSON 匯出／匯入備份 |
 | 測試 | ✅ | Jest 20 項（storage 邏輯） |
 
-**MVP 已結案**；無預設待辦批次。
+**MVP 已結案**；下一階段以版面微調為主。
 
 ### 已知問題
 
-#### 問題群：iOS 獨立 PWA 捲動（PWA-SCROLL）
+| 編號 | 現象 | 狀態 |
+|------|------|------|
+| **PWA-LAYOUT** | 版面偶爾會自己稍微放大 | **待處理**；下一待辦 |
 
-**共同環境**：iPhone 17、iOS 26.5、Safari 獨立 PWA、HTTPS（含 GitHub Pages）
+**已結案**（2026-07-13 實機確認）：
 
-**相關程式**：
-
-- `public/index.html` — `html`／`body`／`#root` 使用 document 自然捲動
-- `src/components/ScreenScroll.web.tsx` — Web 的 `scrollTo` 委派給 `window`
-- `src/hooks/useScrollToSection.ts` — 表單展開時捲至指定區段
-
-**不影響**：`localStorage`／IndexedDB 讀寫、多數按鈕操作
-
-| 編號 | 現象 | 觸發條件 | 狀態 |
-|------|------|----------|------|
-| **PWA-001** | 功能頁無法上下滑動 | 從主畫面重開 App 後進入代辦／筆記／收支頁 | **方向 D 待實機驗證**；改為 document 自然捲動 |
-| **PWA-002** | 鍵盤／focus 後畫面被拉回頂部 | 點輸入框開啟鍵盤後輸入 | **已修復**；2026-07-13 實機確認不再重現 |
-
-**拆解與關聯**：
-
-1. **PWA-001（冷啟動捲動失效）**
-   - `?noRecover=1` 完全停用恢復碼後仍重現，排除恢復碼副作用。
-   - 推測為 iOS 獨立 PWA 對內層 `overflow: auto` 容器未正確啟用 touch 手勢。
-   - 點輸入框會觸發 `focus`，瀏覽器重新佈局後捲動**暫時**恢復；關閉 App 再重開則重現。
-2. **PWA-002（鍵盤／focus 鎖回頂部）**
-   - 方向 A 移除 `focusin`／`visualViewport` 的 document reset 後，實機輸入不再被拉回頂部。
-   - 2026-07-13 標記為已修復。
-3. **表單 `scrollToSection`**
-   - 方向 D 改由 `window.scrollTo` 執行，需在實機驗證定位。
-
-**需你協助的實機驗證**（部署後於 iPhone 獨立 PWA 測試）：
-
-1. 關閉再重開主畫面 PWA，依序進入代辦／筆記／收支頁，確認可直接上下滑動。
-2. 展開新增／編輯表單，確認自動定位與鍵盤輸入正常。
-3. 開啟筆記查看模式，確認圖片區與詳情區仍維持預期比例。
+- **PWA-001** 冷啟動後無法滑動 → 方向 D（document 自然捲動）修復
+- **PWA-002** 鍵盤輸入被拉回頂部 → 方向 A 修復
+- **離線資料** 斷網重開後 `localStorage`／IndexedDB 資料仍在

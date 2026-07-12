@@ -2,11 +2,73 @@
 
 ## [2026-07-13]
 
-- [實機] PWA-002 已確認修復：開啟鍵盤輸入時不再被拉回頂部
-- [診斷] PWA-001 在 `?noRecover=1` 完全停用恢復碼後仍重現，確認不是恢復碼副作用；點輸入框後滑動與縮放才恢復，推測為內層 overflow 的 touch 手勢層失效
-- [修復候選] 採方向 D：Web 改用 document 自然捲動，移除 `html`／`body`／`#root` 的垂直捲動鎖定及舊恢復機制
-- [技術] `ScreenScroll.web.tsx` 改由 `window.scrollTo` 定位；路由切換時回到頁首；`sw.js` `CACHE_NAME` → `v3`
-- [待辦] 部署後實機驗證 PWA-001、表單自動定位、鍵盤輸入與筆記查看模式版面
+- [實機] 方向 D 部署後驗收通過：冷啟動可滑動、表單定位與鍵盤輸入正常、筆記查看模式正常
+- [實機] 斷網重開後 `localStorage`／IndexedDB 資料仍在
+- [結案] PWA-001（document 自然捲動）、PWA-002（移除 focus reset）均已修復
+- [修復] 方向 D：移除內層 overflow 捲動與舊恢復機制；`sw.js` `CACHE_NAME` → `v3`
+- [已知] **PWA-LAYOUT**：版面偶爾會自己稍微放大；下一待辦為版面微調
+- [文件] 新增 §PWA-SCROLL 問題回顧，記錄前因後果與解法
+
+### PWA-SCROLL 問題回顧（2026-07-07～07-13）
+
+> iPhone 17、iOS 26.5、Safari 獨立 PWA、GitHub Pages HTTPS。功能與離線讀寫不受影響，僅捲動與鍵盤輸入體驗異常。
+
+#### 現象
+
+| 編號 | 現象 | 觸發條件 |
+|------|------|----------|
+| **PWA-001** | 代辦／筆記／收支頁無法上下滑動 | 從主畫面重開 App 後進入功能頁 |
+| **PWA-002** | 開啟鍵盤輸入時畫面被拉回頂部 | 在頁面下方點輸入框輸入 |
+
+兩者關聯：PWA-001 發生時，點一下輸入框觸發 `focus` 後捲動（甚至縮放）會暫時恢復；關閉 App 再重開則重現。
+
+#### 舊架構（問題根源）
+
+採「固定外殼 + 內層捲動」：
+
+```
+html / body / #root  → overflow: hidden（頁面本身不捲）
+    └── ScreenScroll div  → overflowY: auto（實際捲動發生在此）
+```
+
+- `ScreenScroll.web.tsx` 以內層 `<div data-pwa-scroll="true">` 承擔捲動。
+- `pwaScrollRecovery.ts` 與 `index.html` 內嵌腳本在 `pageshow`／`visibilitychange`／`focusin` 時執行恢復。
+
+推測根因：iOS 獨立 PWA 冷啟動時，WebKit 對內層 `overflow: auto` 容器未正確啟用 touch 手勢；`focus` 觸發重新佈局後才暫時恢復。此為平台層行為，非資料或 SW 問題。
+
+#### 嘗試過的方案
+
+| 階段 | 作法 | 結果 |
+|------|------|------|
+| 早期緩解 | `kickScrollContainers()`：重設 `scrollTop`、`touchAction`、`-webkit-overflow-scrolling` | PWA-001 仍存在 |
+| 方向 A（07-12） | 移除 `focusin` 的 `staggeredDocumentScrollReset` 與 `visualViewport` 的 `scrollTo(0,0)` | **PWA-002 修復**；PWA-001 仍存在 |
+| 對照實驗 | 網址加 `?noRecover=1` 完全停用恢復碼 | PWA-001 **仍重現** → 排除恢復碼副作用 |
+
+結論：先前改動是在「有問題的捲動層」上打補丁；減少 `scrollTo(0,0)` 可解 PWA-002，但無法解 PWA-001。
+
+#### 最終解法：方向 D（document 自然捲動）
+
+避開內層 overflow 捲動，改由整個頁面自然捲動：
+
+1. **`public/index.html`**：移除 `html`／`body`／`#root` 的 `overflow: hidden`；刪除 inline 恢復腳本。
+2. **`ScreenScroll.web.tsx`**：不再作為捲動容器；`scrollTo` 改呼叫 `window.scrollTo`。
+3. **`screenScroll.ts`**：Web 端移除 `overflowY: auto` 等內層捲動樣式。
+4. **`Screen.tsx`**：移除 `overflow: hidden`。
+5. **刪除** `pwaScrollRecovery.ts`、`usePwaScrollRecovery.ts` 及相關測試。
+6. **`App.tsx`**：路由切換時 `window.scrollTo(0, 0)` 回到頁首。
+7. **`sw.js`**：`CACHE_NAME` → `v3`，確保實機載入新版。
+
+#### 結案
+
+- **PWA-001**：07-13 實機確認修復。
+- **PWA-002**：方向 A 後實機確認修復；方向 D 部署後未復發。
+- **離線資料**：斷網重開後 `localStorage`／IndexedDB 正常。
+
+#### 備忘
+
+- iOS 獨立 PWA 上，內層 `overflow: auto` 捲動在冷啟動時不可靠；優先使用 document 自然捲動。
+- 鍵盤相關捲動問題，先檢查是否有 `scrollTo(0,0)` 或 `visualViewport` reset 與使用者操作衝突。
+- 實機對照（如 `?noRecover=1`）有助區分「自家程式副作用」與「平台原生 bug」。
 
 ## [2026-07-12]
 
