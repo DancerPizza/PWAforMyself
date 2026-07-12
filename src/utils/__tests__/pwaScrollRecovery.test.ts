@@ -1,5 +1,6 @@
 import {
   installPwaScrollRecovery,
+  isScrollRecoveryDisabled,
   isStandalonePwa,
   kickScrollContainers,
   recoverPwaScroll
@@ -55,35 +56,45 @@ describe('pwaScrollRecovery helpers', () => {
   });
 });
 
-describe('PWA-SCROLL regression (unit test confirms current behavior)', () => {
+describe('PWA-SCROLL fix (方向 A)：不再對抗 document 捲動', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     document.body.innerHTML = '';
     jest.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
     mockStandalonePwa();
+    window.history.replaceState({}, '', '/');
   });
 
   afterEach(() => {
     jest.useRealTimers();
     jest.restoreAllMocks();
+    window.history.replaceState({}, '', '/');
   });
 
-  it('PWA-002: focusin triggers staggered document scroll reset in standalone PWA', () => {
+  it('PWA-002: focusin 只 kick 內層容器，不再 reset document 捲動', () => {
+    const container = document.createElement('div');
+    container.setAttribute('data-pwa-scroll', 'true');
+    container.scrollTop = 150;
+    document.body.appendChild(container);
+
     const input = document.createElement('input');
     document.body.appendChild(input);
 
     const cleanup = installPwaScrollRecovery();
+    jest.runAllTimers(); // 清空安裝時的 resume 排程
+    (window.scrollTo as jest.Mock).mockClear();
+
     input.focus();
     document.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
     jest.runAllTimers();
 
-    // 安裝時 scheduleResumeScrollRecovery + focusin staggeredReset → 多次 scrollTo(0,0)
-    expect(window.scrollTo).toHaveBeenCalled();
-    expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+    expect(window.scrollTo).not.toHaveBeenCalled();
+    expect(container.style.touchAction).toBe('pan-y');
+    expect(container.scrollTop).toBe(150);
     cleanup();
   });
 
-  it('PWA-002: visualViewport keyboard offset triggers document scroll reset', () => {
+  it('PWA-002: 不再註冊 visualViewport scroll 監聽（鍵盤不觸發 reset）', () => {
     const viewport = {
       offsetTop: 120,
       addEventListener: jest.fn(),
@@ -96,17 +107,30 @@ describe('PWA-SCROLL regression (unit test confirms current behavior)', () => {
     });
 
     const cleanup = installPwaScrollRecovery();
-    const handler = viewport.addEventListener.mock.calls.find(
+    const scrollListener = viewport.addEventListener.mock.calls.find(
       ([event]) => event === 'scroll'
-    )?.[1] as (() => void) | undefined;
+    );
 
-    handler?.();
-
-    expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+    expect(scrollListener).toBeUndefined();
     cleanup();
   });
 
-  it('recoverPwaScroll resets document scroll but preserves inner container position', () => {
+  it('診斷旗標 ?noRecover=1 完全停用恢復（不排程、不 scrollTo）', () => {
+    window.history.replaceState({}, '', '?noRecover=1');
+
+    const container = document.createElement('div');
+    container.setAttribute('data-pwa-scroll', 'true');
+    document.body.appendChild(container);
+
+    const cleanup = installPwaScrollRecovery();
+    jest.runAllTimers();
+
+    expect(isScrollRecoveryDisabled()).toBe(true);
+    expect(window.scrollTo).not.toHaveBeenCalled();
+    cleanup();
+  });
+
+  it('recoverPwaScroll 仍 reset document，但保留內層容器捲動位置', () => {
     const container = document.createElement('div');
     container.setAttribute('data-pwa-scroll', 'true');
     container.scrollTop = 200;

@@ -68,6 +68,15 @@
     <div id="root"></div>
     <script>
       (function () {
+        // 診斷旗標：?noRecover=1 完全停用捲動恢復，用於實機對照實驗（PWA-001）
+        function isRecoveryDisabled() {
+          return /[?&]noRecover(?:=|&|$)/.test(window.location.search);
+        }
+
+        if (isRecoveryDisabled()) {
+          return;
+        }
+
         function isStandalone() {
           return (
             window.navigator.standalone === true ||
@@ -121,29 +130,15 @@
           });
         }
 
-        function staggeredReset() {
-          resetDocumentScroll();
-          [16, 50, 100, 200].forEach(function (delay) {
-            window.setTimeout(resetDocumentScroll, delay);
-          });
-          kickScrollContainers();
-        }
-
+        // 方向 A：focusin 僅 kick 內層容器，不再 staggeredReset；移除 visualViewport reset
         document.addEventListener('focusin', function () {
-          if (isStandalone()) staggeredReset();
+          if (isStandalone()) kickScrollContainers();
         });
         window.addEventListener('pageshow', scheduleResumeRecovery);
         document.addEventListener('visibilitychange', function () {
           if (document.visibilityState === 'visible') scheduleResumeRecovery();
         });
         window.addEventListener('online', scheduleResumeRecovery);
-        if (window.visualViewport) {
-          window.visualViewport.addEventListener('scroll', function () {
-            if (isStandalone() && window.visualViewport.offsetTop > 0) {
-              resetDocumentScroll();
-            }
-          });
-        }
         scheduleResumeRecovery();
       })();
     </script>

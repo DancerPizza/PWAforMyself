@@ -120,13 +120,14 @@
 - **主畫面**：三張功能卡僅顯示標題；比例 flex **75:10:45**（卡 25%×3、間隔 10%、匯入匯出 15%）
 - **儲存**：代辦／筆記／收支 → `localStorage`；筆記圖片 blob → IndexedDB（`imageIds` 在 `NoteItem`）
 - **備份限制**：JSON 匯出含 `imageIds`，**不含**圖片 blob；換裝置匯入後需重新選圖
-- **已知 bug（捲動問題群）**：**PWA-001**（重開後無法滑動）、**PWA-002**（鍵盤／focus 後畫面被鎖回頂部）— 暫緩，見 §已知問題
-- **測試**：`npm test`（26 項）；代辦／筆記／收支／備份邏輯通過；PWA-SCROLL 見 §已知問題 §單元測試驗證
-- **Git**（2026-07-07）：`main` 最新 `c390b0c`；工作區含測試與文件更新待提交
+- **已知 bug（捲動問題群）**：**PWA-001**（重開後無法滑動）、**PWA-002**（鍵盤／focus 後畫面被鎖回頂部）— 已套用方向 A 修復候選版，**待實機驗證**，見 §已知問題
+- **測試**：`npm test`（27 項）；代辦／筆記／收支／備份邏輯通過；PWA-SCROLL 見 §已知問題 §單元測試驗證
+- **診斷旗標**：網址加 `?noRecover=1` 可完全停用捲動恢復（`usePwaScrollRecovery` 與 `index.html` 內嵌腳本皆支援），用於 PWA-001 對照實驗
+- **Git**（2026-07-07）：`main` 最新 `c390b0c`；工作區含方向 A 修復、測試與文件更新待提交
 
 ### 後續可選方向（無優先順序）
 
-- 修復 **PWA-001／PWA-002**（iOS 獨立 PWA 捲動問題群）
+- **實機驗證方向 A 修復**（PWA-001／PWA-002）；未解時再評估方向 B（focus 用 `scrollIntoView`）／方向 D（改 document 級自然捲動）
 - 備份匯出納入 IndexedDB 圖片（或 ZIP）
 - 新功能或 UI 微調（由使用者指定）
 
@@ -200,8 +201,8 @@
 
 | 編號 | 現象 | 觸發條件 | 狀態 |
 |------|------|----------|------|
-| **PWA-001** | 功能頁無法上下滑動 | 從主畫面重開 App 後進入代辦／筆記／收支頁 | **未解**；已嘗試 `ScreenScroll`、`pwaScrollRecovery` 等多輪修復 |
-| **PWA-002** | 畫面不停被拉回、鎖在最上方 | 點輸入框開啟鍵盤；或 PWA-001 以「點輸入框」暫恢復後繼續滑動／輸入 | **未解**；2026-07-07 實機新發現，接續 PWA-001 驗證 |
+| **PWA-001** | 功能頁無法上下滑動 | 從主畫面重開 App 後進入代辦／筆記／收支頁 | **待實機驗證**；方向 A 已移除對抗性 reset，另備 `?noRecover=1` 對照旗標 |
+| **PWA-002** | 畫面不停被拉回、鎖在最上方 | 點輸入框開啟鍵盤；或 PWA-001 以「點輸入框」暫恢復後繼續滑動／輸入 | **修復候選（方向 A）**；已移除 `focusin`／`visualViewport` 的 `scrollTo(0,0)`，待實機確認 |
 
 **拆解與關聯**：
 
@@ -217,10 +218,19 @@
 
 **暫時迴避**：
 
-- PWA-001：重開後若無法滑動，可點一下任意輸入框暫恢復（但可能觸發 PWA-002）。
+- PWA-001：重開後若無法滑動，可點一下任意輸入框暫恢復。
 - PWA-002：盡量在列表頂部操作；避免在頁面下方長表單輸入；關閉鍵盤後再嘗試滑動。
 
-#### 單元測試驗證（2026-07-07）
+#### 已套用修復（方向 A，2026-07-12，待實機驗證）
+
+- `src/utils/pwaScrollRecovery.ts`、`public/index.html`：
+  - 移除 `focusin` 的 `staggeredDocumentScrollReset`（多次 `scrollTo(0,0)`），改為僅 `kickScrollContainers()`。
+  - 移除 `visualViewport` `scroll` 監聽（鍵盤彈出不再 `resetDocumentScroll`）。
+  - `recoverPwaScroll`／`recoverScroll`（重開／resume 時）保留 `resetDocumentScroll`，因當下無鍵盤、對 `overflow:hidden` 外殼近乎 no-op。
+- 新增診斷旗標 `?noRecover=1`：完全停用恢復邏輯（`usePwaScrollRecovery` 與 inline 腳本皆支援），供 PWA-001 對照實驗。
+- `public/sw.js`：`CACHE_NAME` bump 至 `v2`，避免實機讀到舊 `index.html` 快取。
+
+#### 單元測試驗證（2026-07-12）
 
 | 範圍 | 結果 | 說明 |
 |------|------|------|
@@ -228,18 +238,14 @@
 | 筆記 `notes` | ✅ 5 項 | CRUD、預設分類、`imageIds`、排序 |
 | 收支 `expenses` | ✅ 6 項 | CRUD、月統計、圓餅圖資料、格式化 |
 | 備份 `backup` | ✅ 3 項 | 匯出／解析／還原 |
-| PWA-SCROLL | ✅ 6 項（迴歸鎖定） | 確認 `focusin`、`visualViewport`、`recoverPwaScroll` 會 `scrollTo(0,0)` |
+| PWA-SCROLL | ✅ 7 項 | 驗證 `focusin` 不再 reset、無 `visualViewport` 監聽、`?noRecover=1` 停用、`kick` 保留內層位置 |
 
 **測試後結論**：
 
-- **PWA-002 根因**：單元測試**確認**緩解碼會在 `focusin`（含安裝時 `scheduleResumeScrollRecovery`）與鍵盤 `visualViewport` 時強制 `scrollTo(0,0)`；與實機現象一致。
-- **PWA-001**：jsdom 無法模擬 iOS 冷啟動 touch 捲動失效；**需實機 E2E** 驗證。`kickScrollContainers` 本身可保留內層 `scrollTop`。
-- **後續修復方向**（建議順序）：
-  1. 移除 `staggeredDocumentScrollReset` 與 `visualViewport` 的 `resetDocumentScroll`；僅保留 `kickScrollContainers`。
-  2. 同步修改 `public/index.html` 內嵌腳本。
-  3. 實機驗證 PWA-001 是否仍存在（區分 iOS bug vs 緩解碼副作用）。
+- 單元測試確認方向 A 已移除 `focusin`／`visualViewport` 的 `scrollTo(0,0)`；PWA-002 對抗來源在程式層已消除。
+- PWA-001 需實機驗證：jsdom 無法模擬 iOS 冷啟動 touch 捲動失效。
 
-**需你協助的實機驗證**：
+**需你協助的實機驗證**（部署後於 iPhone 獨立 PWA 測試）：
 
-1. 暫時停用 `usePwaScrollRecovery` 與 `index.html` 恢復腳本後部署，重開 PWA 測試 PWA-001 是否仍發生。
-2. 修復候選版部署後，在筆記頁底部開表單輸入，確認 PWA-002 是否消失且 PWA-001 未惡化。
+1. **PWA-002 修復確認**：進筆記頁底部開表單輸入，確認畫面不再被拉回頂部。
+2. **PWA-001 對照**：正式網址開 App 測是否仍需點輸入框才能滑動；再開 `…/PWAforMyself/?noRecover=1`（Safari 分頁即可）比較差異，判斷是 iOS 原生 bug 或恢復碼副作用。

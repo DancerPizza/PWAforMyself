@@ -1,5 +1,13 @@
 # Project Log
 
+## [2026-07-12]
+
+- [修復] PWA-SCROLL 方向 A：`pwaScrollRecovery.ts` 與 `index.html` 移除 `focusin` staggered reset 與 `visualViewport` 的 `scrollTo(0,0)`（PWA-002 對抗來源），僅保留 `kickScrollContainers`
+- [新增] 診斷旗標 `?noRecover=1` 完全停用捲動恢復，供 PWA-001 對照實驗
+- [技術] `sw.js` `CACHE_NAME` → `v2`，避免實機讀到舊 `index.html`
+- [測試] PWA-SCROLL 測試改寫為驗證新行為（27 項全通過）；typecheck 通過
+- [待辦] 實機驗證 PWA-002 是否消失、PWA-001 是否仍存在（含 `?noRecover=1` 對照）
+
 ## [2026-07-07]
 
 - [測試] 新增 Jest（`npm test`）26 項：代辦／筆記／收支／備份全通過；PWA-SCROLL 迴歸測試確認 `scrollTo(0,0)` 行為

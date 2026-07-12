@@ -1,6 +1,6 @@
 // Cache-First：僅快取靜態資源（HTML / JS / CSS / icons）
 // localStorage 由瀏覽器獨立管理，不在此快取範圍內
-const CACHE_NAME = 'expo-pwa-tools-static-v1';
+const CACHE_NAME = 'expo-pwa-tools-static-v2';
 
 const STATIC_PATH_PATTERN =
   /\.(?:html?|js|css|ico|png|svg|json|woff2?|ttf|eot)$/i;

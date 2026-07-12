@@ -1,6 +1,15 @@
 // iOS 獨立 PWA：重開後內部捲動容器可能失效，點輸入框會觸發 focus 恢復
 const RESUME_RECOVERY_DELAYS_MS = [0, 50, 150, 300, 500, 800];
 
+// 診斷旗標：網址帶 ?noRecover=1 時完全停用捲動恢復，用於實機對照實驗（PWA-001）
+export function isScrollRecoveryDisabled(): boolean {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  return new URLSearchParams(window.location.search).has('noRecover');
+}
+
 export function isStandalonePwa(): boolean {
   if (typeof window === 'undefined') {
     return false;
@@ -56,19 +65,12 @@ export function kickScrollContainers() {
   }
 }
 
-function staggeredDocumentScrollReset() {
-  resetDocumentScroll();
-
-  for (const delay of [16, 50, 100, 200]) {
-    window.setTimeout(resetDocumentScroll, delay);
-  }
-}
-
 export function recoverPwaScroll() {
   if (typeof document === 'undefined' || typeof window === 'undefined') {
     return;
   }
 
+  // 重開／恢復時無鍵盤，reset document scroll 對 overflow:hidden 外殼近乎 no-op；主要仰賴 kick
   resetDocumentScroll();
   clearInlineScrollLock(document.documentElement);
   clearInlineScrollLock(document.body);
@@ -76,7 +78,7 @@ export function recoverPwaScroll() {
 }
 
 export function scheduleResumeScrollRecovery() {
-  if (typeof window === 'undefined') {
+  if (typeof window === 'undefined' || isScrollRecoveryDisabled()) {
     return;
   }
 
@@ -86,13 +88,18 @@ export function scheduleResumeScrollRecovery() {
 }
 
 export function installPwaScrollRecovery() {
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
+  if (
+    typeof window === 'undefined' ||
+    typeof document === 'undefined' ||
+    isScrollRecoveryDisabled()
+  ) {
     return () => undefined;
   }
 
+  // 方向 A：移除 focusin/visualViewport 的 document reset（PWA-002 對抗來源）
+  // focusin 僅重新啟用內層容器 touch 捲動，不再強制 scrollTo(0,0)
   const onFocusIn = () => {
     if (isStandalonePwa()) {
-      staggeredDocumentScrollReset();
       kickScrollContainers();
     }
   };
@@ -111,21 +118,10 @@ export function installPwaScrollRecovery() {
     scheduleResumeScrollRecovery();
   };
 
-  const onVisualViewportScroll = () => {
-    if (!isStandalonePwa() || !window.visualViewport) {
-      return;
-    }
-
-    if (window.visualViewport.offsetTop > 0) {
-      resetDocumentScroll();
-    }
-  };
-
   document.addEventListener('focusin', onFocusIn);
   window.addEventListener('pageshow', onPageShow);
   document.addEventListener('visibilitychange', onVisibilityChange);
   window.addEventListener('online', onOnline);
-  window.visualViewport?.addEventListener('scroll', onVisualViewportScroll);
 
   scheduleResumeScrollRecovery();
 
@@ -134,6 +130,5 @@ export function installPwaScrollRecovery() {
     window.removeEventListener('pageshow', onPageShow);
     document.removeEventListener('visibilitychange', onVisibilityChange);
     window.removeEventListener('online', onOnline);
-    window.visualViewport?.removeEventListener('scroll', onVisualViewportScroll);
   };
 }
