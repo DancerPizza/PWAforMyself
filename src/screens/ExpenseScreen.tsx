@@ -210,7 +210,7 @@ export function ExpenseScreen({ onBack }: ExpenseScreenProps) {
   }
 
   function handleDeleteExpense(id: string) {
-    if (!confirmAction('確定要刪除這筆收支紀錄嗎？')) {
+    if (!confirmAction('確定刪除？')) {
       return;
     }
 

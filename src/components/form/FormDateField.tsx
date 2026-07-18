@@ -17,7 +17,7 @@ export function FormDateField({
   return (
     <View>
       <Text style={formStyles.fieldLabel}>{label}</Text>
-      <Text style={formStyles.fieldHint}>格式 YYYY-MM-DD，例如 {exampleDate}</Text>
+      <Text style={formStyles.fieldHint}>格式 YYYY-MM-DD</Text>
       <TextInput
         placeholder={exampleDate}
         placeholderTextColor={inputProps.placeholderTextColor}

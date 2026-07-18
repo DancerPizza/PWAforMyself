@@ -54,7 +54,7 @@ export function NoteImagePicker({ imageIds, onChange }: NoteImagePickerProps) {
   return (
     <View style={styles.wrap}>
       <Text style={formStyles.fieldLabel}>圖片</Text>
-      <Text style={formStyles.fieldHint}>可選，最多 {MAX_NOTE_IMAGES} 張（存於 IndexedDB）</Text>
+      <Text style={formStyles.fieldHint}>最多 {MAX_NOTE_IMAGES} 張</Text>
 
       {imageIds.length > 0 ? (
         <View style={styles.thumbRow}>

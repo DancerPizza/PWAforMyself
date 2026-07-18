@@ -95,7 +95,7 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
   }
 
   function handleCreateTodo() {
-    const missingField = getFirstMissingField([{ label: '代辦內容', value: draftTitle }]);
+    const missingField = getFirstMissingField([{ label: '待辦內容', value: draftTitle }]);
 
     if (missingField) {
       showValidationAlert(`請輸入${missingField}！`);
@@ -124,7 +124,7 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
       return;
     }
 
-    const missingField = getFirstMissingField([{ label: '代辦內容', value: editingTitle }]);
+    const missingField = getFirstMissingField([{ label: '待辦內容', value: editingTitle }]);
 
     if (missingField) {
       showValidationAlert(`請輸入${missingField}！`);
@@ -137,7 +137,7 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
   }
 
   function handleDeleteTodo(id: string) {
-    if (!confirmAction('確定要刪除這項代辦嗎？')) {
+    if (!confirmAction('確定要刪除待辦嗎？')) {
       return;
     }
 
@@ -160,7 +160,7 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
           >
             <Text style={styles.backButtonText}>← 返回</Text>
           </Pressable>
-          <Text style={styles.screenTitle}>極簡代辦事項</Text>
+          <Text style={styles.screenTitle}>待辦事項</Text>
         </View>
 
         <View style={styles.calendarCard}>
@@ -247,10 +247,10 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
           <View onLayout={onSectionLayout} style={styles.addRow}>
             <TextInput
               ref={draftInputRef}
-              accessibilityLabel="新增代辦標題"
+              accessibilityLabel="新增待辦標題"
               onChangeText={setDraftTitle}
               onSubmitEditing={handleCreateTodo}
-              placeholder="輸入代辦內容"
+              placeholder="輸入待辦內容"
               placeholderTextColor={theme.mutedText}
               returnKeyType="done"
               style={styles.input}
@@ -294,7 +294,7 @@ export function TodoScreen({ onBack }: TodoScreenProps) {
                   <View style={styles.todoContent}>
                     {isEditing ? (
                       <TextInput
-                        accessibilityLabel="編輯代辦標題"
+                        accessibilityLabel="編輯待辦標題"
                         autoFocus
                         onChangeText={setEditingTitle}
                         onSubmitEditing={handleSaveEdit}

@@ -179,7 +179,7 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
   }
 
   async function handleDeleteNote(id: string) {
-    if (!confirmAction('確定要刪除這則筆記嗎？')) {
+    if (!confirmAction('確定要刪除筆記嗎？')) {
       return;
     }
 
@@ -244,7 +244,7 @@ export function NoteScreen({ onBack }: NoteScreenProps) {
         <View style={styles.headerCard}>
           <Text style={styles.headerTitle}>筆記列表</Text>
 
-          <Text style={styles.fieldLabel}>分類篩選</Text>
+          <Text style={styles.fieldLabel}>分類</Text>
           <View style={styles.categoryRow}>
             {noteFilterOptions.map((option) => {
               const isSelected = categoryFilter === option;
