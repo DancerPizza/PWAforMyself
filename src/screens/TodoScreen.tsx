@@ -524,7 +524,7 @@ const styles = StyleSheet.create({
     color: theme.text,
     flex: 1,
     fontFamily: textFont,
-    fontSize: 15,
+    fontSize: 16,
     minHeight: 44,
     paddingHorizontal: 14,
     paddingVertical: 10

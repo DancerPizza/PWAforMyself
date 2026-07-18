@@ -25,7 +25,7 @@ export const formStyles = StyleSheet.create({
     borderWidth: 1,
     color: theme.text,
     fontFamily: textFont,
-    fontSize: 15,
+    fontSize: 16,
     marginBottom: 12,
     minHeight: 44,
     paddingHorizontal: 14,
