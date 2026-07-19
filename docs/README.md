@@ -1,6 +1,6 @@
 # Expo PWA 極簡工具集
 
-個人離線使用的 iPhone PWA 小工具集合。**MVP 已結案**（M0–M6、批次 A–E）；正式網址：https://dancerpizza.github.io/PWAforMyself/
+個人離線使用的 iPhone PWA 小工具集合。**專案已結案**（M0–M6、批次 A–E、PWA-SCROLL、PWA-LAYOUT）；正式網址：https://dancerpizza.github.io/PWAforMyself/
 
 ## 接手快速導覽
 
@@ -18,11 +18,9 @@
 - 收支紀錄：年曆、月份列表、收入／支出 CRUD、支出分類圓餅圖
 - 不做：登入、雲端同步、自動提醒、推播通知
 
-## 已知問題（PWA-SCROLL 問題群）
+## 已知問題
 
-- **PWA-001**：重開後功能頁無法上下滑動；點輸入框可暫時恢復。
-- **PWA-002**：開啟鍵盤後畫面不停被拉回、鎖在最上方。
-- 拆解、關聯與暫時迴避見 [AGENTS.md](../AGENTS.md) §已知問題。
+目前無開放項目。PWA-001／PWA-002／PWA-LAYOUT 結案紀錄見 [AGENTS.md](../AGENTS.md) §已知問題 與 [Project_Log](./process/Project_Log.md)。
 
 ## 文件
 

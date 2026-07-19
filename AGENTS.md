@@ -1,6 +1,6 @@
 # Cursor Agent 指南 - PWA 極簡工具集
 
-> `last_updated`: 2026-07-13
+> `last_updated`: 2026-07-20
 
 ## 角色定位
 
@@ -113,18 +113,17 @@
 
 > 新 Context Window 先讀本節 + §已知問題，再依 §開工讀檔規則 補讀其他文件。
 
-- **產品狀態**：M0–M6、批次 A–E、PWA-SCROLL **均已完成**；功能面已可日常使用。
+- **產品狀態**：**專案已結案**（M0–M6、批次 A–E、PWA-SCROLL、PWA-LAYOUT）；功能面可日常使用。
 - **正式網址**：https://dancerpizza.github.io/PWAforMyself/（`baseUrl`：`/PWAforMyself`）
 - **日常開發**：`npm run web`；上線：`npm run build:web` → push `main` → Actions 部署
 - **儲存**：代辦／筆記／收支 → `localStorage`；筆記圖片 blob → IndexedDB；斷網重開資料仍在
 - **備份限制**：JSON 匯出含 `imageIds`，**不含**圖片 blob
-- **捲動**：方向 D（document 自然捲動）實機通過；PWA-001／PWA-002 已結案
+- **捲動／版面**：PWA-001／PWA-002／PWA-LAYOUT 均已結案
 - **測試**：`npm test`（20 項）
-- **下一待辦**：**版面微調**（偶發輕微放大，見 PWA-LAYOUT）
+- **下一待辦**：無固定待辦；僅維護或使用者指定的可選方向
 
 ### 後續可選方向
 
-- **版面微調**（PWA-LAYOUT，優先）
 - 備份匯出納入 IndexedDB 圖片（或 ZIP）
 - 新功能（由使用者指定）
 
@@ -178,17 +177,17 @@
 | 批次 D | ✅ | 刪除確認、共用表單元件 |
 | 批次 E | ✅ | JSON 匯出／匯入備份 |
 | 測試 | ✅ | Jest 20 項（storage 邏輯） |
+| PWA-LAYOUT | ✅ | 輸入字級 16px + viewport 停用縮放 |
 
-**MVP 已結案**；下一階段以版面微調為主。
+**專案已結案**（2026-07-20）；無開放中的已知問題。
 
 ### 已知問題
 
-| 編號 | 現象 | 狀態 |
-|------|------|------|
-| **PWA-LAYOUT** | 版面偶爾會自己稍微放大 | **待處理**；下一待辦 |
+目前無開放項目。
 
-**已結案**（2026-07-13 實機確認）：
+**已結案**：
 
-- **PWA-001** 冷啟動後無法滑動 → 方向 D（document 自然捲動）修復
-- **PWA-002** 鍵盤輸入被拉回頂部 → 方向 A 修復
+- **PWA-001** 冷啟動後無法滑動 → 方向 D（document 自然捲動）；2026-07-13 實機確認
+- **PWA-002** 鍵盤輸入被拉回頂部 → 方向 A；2026-07-13 實機確認
+- **PWA-LAYOUT** 輸入 focus 觸發版面放大 → 輸入字級 16px + `maximum-scale=1`；2026-07-20 實機確認
 - **離線資料** 斷網重開後 `localStorage`／IndexedDB 資料仍在

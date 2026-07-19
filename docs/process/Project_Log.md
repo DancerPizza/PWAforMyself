@@ -1,10 +1,16 @@
 # Project Log
 
+## [2026-07-20]
+
+- [實機] PWA-LAYOUT 驗收通過：輸入時不再觸發版面放大；保留表單垂直定位
+- [結案] PWA-LAYOUT；專案無開放已知問題
+- [資源] 更新 PWA icon（`public/icon-192.png`、`public/icon-512.png`、`assets/icon-512.png` 等）；移除未使用的 `public/notes.png`
+- [文件] AGENTS／README／Spec／skill 同步為專案結案狀態
+
 ## [2026-07-18]
 
 - [修正] PWA-LAYOUT：所有文字輸入框字級由 15px 調整為 16px，並以 viewport 停用頁面縮放；保留表單垂直定位與鍵盤行為
 - [技術] `sw.js` `CACHE_NAME` → `v4`，確保實機載入新版靜態資源
-- [待驗收] 部署後於 iPhone 確認輸入代辦、筆記與收支時不再觸發版面放大
 
 ## [2026-07-13]
 

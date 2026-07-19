@@ -1,6 +1,6 @@
 # Spec
 
-> `last_updated`: 2026-07-07
+> `last_updated`: 2026-07-20
 
 ## 專案目的
 
@@ -121,7 +121,7 @@
 - `localStorage` 由瀏覽器獨立管理，不在 Service Worker 快取範圍內。
 - 離線驗收：斷網後仍可開啟已安裝的 PWA 並讀寫 `localStorage` 資料。
 - 正式 HTTPS 離線驗收已通過（2026-07-07）；讀寫正常。
-- 已知問題 **PWA-001**（重開後捲動失效）、**PWA-002**（鍵盤／focus 鎖回頂部）見 [`AGENTS.md`](../../AGENTS.md) §已知問題；不影響資料正確性。
+- **PWA-001**／**PWA-002**／**PWA-LAYOUT** 均已結案；詳見 [`AGENTS.md`](../../AGENTS.md) §已知問題。
 
 ### 第二階段（批次 C）筆記圖片
 
