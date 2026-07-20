@@ -1,91 +1,57 @@
 # Expo PWA 極簡工具集
 
-個人離線使用的 iPhone PWA 小工具集合。**專案已結案**（M0–M6、批次 A–E、PWA-SCROLL、PWA-LAYOUT）；正式網址：https://dancerpizza.github.io/PWAforMyself/
+個人離線用的 iPhone PWA（代辦、筆記、收支）。**專案已結案**。
 
-## 接手快速導覽
+正式網址：https://dancerpizza.github.io/PWAforMyself/
 
-1. 先讀 [AGENTS.md](../AGENTS.md) §下次開工摘要 與 §已知問題
-2. 再依 AGENTS §開工讀檔規則 補讀 Spec、workflow、Project_Log
-3. `npm run web` 日常開發；push `main` 自動部署 GitHub Pages
+## 功能
 
-進度摘要見 [AGENTS.md](../AGENTS.md) §專案進度（摘要）。
-
-## 功能概要
-
-- 主畫面：三張功能卡（僅標題）、匯出／匯入備份列；flex 比例 75:10:45
-- 極簡代辦事項：月曆、日期標記、當月代辦列表（由近至遠）、過期未完成高亮
-- 簡易筆記本：列表、分類篩選、CRUD、圖片（最多 3 張）、查看模式（圖片輪播 + 詳情）
-- 收支紀錄：年曆、月份列表、收入／支出 CRUD、支出分類圓餅圖
-- 不做：登入、雲端同步、自動提醒、推播通知
-
-## 已知問題
-
-目前無開放項目。PWA-001／PWA-002／PWA-LAYOUT 結案紀錄見 [AGENTS.md](../AGENTS.md) §已知問題 與 [Project_Log](./process/Project_Log.md)。
+- 主畫面：三功能入口 + JSON 匯出／匯入
+- 代辦：月曆、日期標記、CRUD、過期高亮
+- 筆記：列表、分類、圖片（最多 3 張，IndexedDB）、查看模式
+- 收支：年曆、月份列表、CRUD、支出圓餅圖
+- 不做：登入、雲端同步、推播提醒
 
 ## 文件
 
-- [AGENTS.md](../AGENTS.md)：操作規則、程式碼地圖、下次開工摘要、進度追蹤
-- [product/Spec.md](./product/Spec.md)：產品目的、技術棧、資料模型與驗收條件
+- [product/Spec.md](./product/Spec.md)：範圍、技術棧、資料模型、驗收
 - [process/Project_Log.md](./process/Project_Log.md)：實作日誌
-- [process/workflow.md](./process/workflow.md)：個人離線開發流程與 Git 步驟
+- [process/workflow.md](./process/workflow.md)：開發與 Git 流程
 
-## 開發快速開始
+## 開發
 
 ```bash
 npm install
-npm run web          # 日常開發預覽（本機）
-npm run build:web    # 產出 dist/（含 manifest、Service Worker）
-npm run typecheck
-```
-
-## GitHub Pages 部署
-
-- 正式網址：https://dancerpizza.github.io/PWAforMyself/
-- `experiments.baseUrl`：`/PWAforMyself`
-- push `main` 後 `.github/workflows/deploy-pages.yml` 自動 build 並部署
-- 區網 `http://` 可能無法註冊 Service Worker；離線與 PWA 安裝請用 HTTPS 正式網址
-
-### 本機預覽正式版（可選）
-
-```bash
-npm run build:web
-npx serve dist
-```
-
-## 環境檢查
-
-```bash
-node --version
-npm --version
-npx expo --version
-npx expo install --check
+npm run web          # 本機預覽
+npm run build:web    # 產出 dist/
 npm run typecheck
 npm test
 ```
 
-版本基準見 [AGENTS.md](../AGENTS.md) §開發環境。
+## 部署
 
-## 技術棧
+- `experiments.baseUrl`：`/PWAforMyself`
+- push `main` → GitHub Actions 部署 Pages
+- 離線／安裝請用 HTTPS 正式網址（區網 `http://` 可能無法註冊 SW）
 
-詳見 [product/Spec.md](./product/Spec.md) §技術棧。
+本機預覽正式版：`npm run build:web` 後 `npx serve dist`
 
-## 模組與 UI 索引
+## 環境基準
+
+- Node.js 22 LTS、Expo SDK 56、React 19、React Native 0.85
+- 目標裝置：iPhone + Safari（獨立 PWA）
+
+## 模組索引
 
 | 路徑 | 用途 |
 |------|------|
-| `App.tsx` | 路由、`storageVersion` 匯入刷新 |
-| `src/theme.ts` | 色彩與字型 |
-| `src/screens/HomeScreen.tsx` | 主畫面版面與功能卡 |
-| `src/data/tools.ts` | 功能卡標題 |
-| `src/components/BackupActions.web.tsx` | 匯出／匯入 JSON |
-| `src/screens/TodoScreen.tsx` | 代辦月曆與列表 |
-| `src/screens/NoteScreen.tsx` | 筆記 CRUD、圖片、查看模式 |
-| `src/components/notes/` | 圖片選擇、縮圖、輪播、詳情檢視 |
-| `src/storage/noteImages.ts` | IndexedDB 圖片 blob |
-| `src/storage/backup.ts` | JSON 備份邏輯 |
-| `src/screens/ExpenseScreen.tsx` | 收支與圓餅圖 |
-| `src/data/noteCategories.ts` | 筆記分類 |
-| `src/data/expenseCategories.ts` | 收支分類 |
-| `src/components/form/` | `FormField`、`FormDateField` |
-| `src/components/ExpensePieChart.tsx` | 圓餅圖 |
+| `App.tsx` | 路由、`storageVersion` |
+| `src/screens/` | 主畫面／代辦／筆記／收支 |
+| `src/storage/` | localStorage、備份、筆記圖片 IndexedDB |
+| `src/components/form/` | 共用表單 |
+| `src/components/notes/` | 選圖、縮圖、輪播、詳情 |
 | `public/manifest.json`、`public/sw.js` | PWA 安裝與離線 |
+
+## 已知問題
+
+目前無開放項目。結案紀錄見 [Project_Log](./process/Project_Log.md)。

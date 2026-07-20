@@ -36,5 +36,6 @@ yarn-error.*
 *.swp
 *.swo
 
-# Cursor
+# Cursor / local agent docs（不上傳 GitHub）
 .cursor/
+AGENTS.md
